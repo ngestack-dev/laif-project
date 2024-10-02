@@ -6,6 +6,7 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AdminController extends Controller
 {
@@ -33,12 +34,15 @@ class AdminController extends Controller
             'short_description' => 'required',
             'description' => 'required',
             'regular_price' => 'required',
-            'sale_price' => 'required',
+            'sale_price' => 'nullable',
             'SKU' => 'required',
             'quantity' => 'required',
-            'image' => 'required | mimes:jpeg,jpg,png | max: 2048',
+            'image' => 'required | mimes:png,jpg,jpeg | max: 2048',
             'featured' => 'required',
             'stock_status' => 'required',
+        ], [
+            'image.mimes' => 'Hanya file dengan ekstensi jpeg, png, jpg, atau gif yang diizinkan.',
+            'image.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         $product = new Product();
@@ -59,8 +63,33 @@ class AdminController extends Controller
         if($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $current_timestamp . '.' . $image->extension();
+            $this->GenerateProductThumbnailImage($image, $imageName);
             $product->image = $imageName;            
         }
+
+        $gallery_arr = array();
+        $gallery_images = "";
+        $counter = 1;
+
+        if($request->hasFile('images')) 
+        {
+            $allowedFileExtion = ['jpg', 'png', 'jpeg'];
+            $files = $request->file('images');
+            foreach ($files as $file) {
+                $gextension = $file->getClientOriginalExtension();
+                $gcheck = in_array($gextension, $allowedFileExtion);
+                if ($gcheck) {
+                    $gfileName = $current_timestamp . '-' . $counter . '.' . $gextension;
+                    $this->GenerateProductThumbnailImage($file, $gfileName);
+                    array_push($gallery_arr, $gfileName);
+                    $counter = $counter + 1;
+                }
+            }
+            $gallery_images = implode(',',$gallery_arr);    
+        }
+        $product->images = $gallery_images;
+        $product->save();
+        return redirect()->route('admin.products')->with('status', 'Product has been added successfully');    
     }
 
     public function GenerateProductThumbnailImage($image, $imageName)
@@ -68,6 +97,15 @@ class AdminController extends Controller
         $destinationPathThumbnails = public_path('/uploads/products/thumbnails');
         $destinationPath = public_path('/uploads/products');
         $img = Image::read($image->path());
+        $img->cover(540,689,"top");
+        $img->resize(540,689, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $imageName);
+
+        $img->cover(540, 689, "top");
+        $img->resize(540, 689, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPathThumbnails . '/' . $imageName);
     }
 
 }

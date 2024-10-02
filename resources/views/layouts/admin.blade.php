@@ -22,6 +22,9 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('images/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     @stack('styles')
 </head>
 
@@ -38,9 +41,9 @@
 
                 <div class="section-menu-left">
                     <div class="box-logo">
-                        <a href="{{ route('home.index') }}" id="site-logo-inner">
-                            <img class="" id="logo_header" alt="" src="images/logo/logo.png"
-                                data-light="images/logo/logo.png" data-dark="images/logo/logo.png">
+                        <a class="mx-auto" href="{{ route('home.index') }}" id="site-logo-inner">
+                            <img class="" id="logo_header_1" alt="" src="{{ asset('images/logo/logo-circle.png')}}"
+                                data-light="{{ asset('images/logo/logo.png')}}" data-dark=" {{ asset('images/logo/logo.png')}} " width="80" height="80">
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
@@ -48,7 +51,7 @@
                     </div>
                     <div class="center">
                         <div class="center-item">
-                            <div class="center-heading">Main Home</div>
+                            <div class="center-heading mt-5">Main Home</div>
                             <ul class="menu-list">
                                 <li class="menu-item">
                                     <a href="{{ route('admin.index') }}" class="">
@@ -164,7 +167,7 @@
                                     <form action="{{ route('logout') }}" method="POST" id="logout-form">
                                         @csrf
                                         <a href="{{ route('logout') }}" class="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            <div class="icon"><i class="icon-settings"></i></div>
+                                            <div class="icon"><i class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;"></i></div>
                                             <div class="text">Logout</div>
                                         </a>
                                     </form>
@@ -398,7 +401,7 @@
                                             id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="header-user wg-user">
                                                 <span class="">
-                                                    <img src="images/avatar/pm.png" alt="" width="40" height="40">
+                                                    <img src="{{ asset('images/avatar/pm.png')}}" alt="" width="40" height="40">
                                                 </span>
                                                 <span class="flex flex-column">
                                                     <span class="body-title mb-2">Nurdin</span>

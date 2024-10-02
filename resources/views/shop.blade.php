@@ -333,7 +333,8 @@
 
                 <div class="d-flex justify-content-between mb-4 pb-md-2">
                     <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
-                        <a href="{{ route('home.index') }}" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
+                        <a href="{{ route('home.index') }}"
+                            class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
                         <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
                         <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
                     </div>
@@ -387,16 +388,20 @@
                                         data-settings='{"resizeObserver": true}'>
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
-                                                <a href="{{ route('shop.product.details') }}"><img loading="lazy"
+                                                <a
+                                                    href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}"><img
+                                                        loading="lazy"
                                                         src="{{ asset('uploads/products') }}/{{ $product->image }}"
                                                         width="330" height="400" alt="{{ $product->name }}"
                                                         class="pc__img"></a>
                                             </div>
                                             <div class="swiper-slide">
                                                 @foreach (explode(',', $product->images) as $gimg)
-                                                    <a href="{{ route('shop.product.details') }}"><img loading="lazy"
-                                                            src="{{ asset('uploads/products') }}/{{ $gimg }}" width="330"
-                                                            height="400" alt="{{ $product->name }}"
+                                                    <a
+                                                        href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}"><img
+                                                            loading="lazy"
+                                                            src="{{ asset('uploads/products') }}/{{ $gimg }}"
+                                                            width="330" height="400" alt="{{ $product->name }}"
                                                             class="pc__img"></a>
                                                 @endforeach
                                             </div>
@@ -410,19 +415,51 @@
                                                 <use href="#icon_next_sm" />
                                             </svg></span>
                                     </div>
-                                    <button
+                                    @if (Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
+                                        <a href="{{ route('cart.index') }}"
+                                            class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium">Go
+                                            to cart</a>
+                                    @else
+                                        @guest
+                                            <a href="{{ route('login') }}"
+                                                class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
+                                                data-aside="cartDrawer" title="Add To Cart">Login to add to
+                                                cart</a>
+                                        @else
+                                            <form name="addtocart-form" method="post" action="{{ route('cart.add') }}">
+                                                @csrf
+                                                <div class="product-single__addtocart">
+                                                    <div class="qty-control position-relative">
+                                                        <input type="number" name="quantity" value="1" min="1"
+                                                            class="qty-control__number text-center">
+                                                        <div class="qty-control__reduce">-</div>
+                                                        <div class="qty-control__increase">+</div>
+                                                    </div><!-- .qty-control -->
+                                                    <input type="hidden" name="id" value="{{ $product->id }}">
+                                                    <input type="hidden" name="name" value="{{ $product->name }}">
+                                                    <input type="hidden" name="price"
+                                                        value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}">
+                                                    <button
+                                                        class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
+                                                        data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
+                                                </div>
+                                            </form>
+                                        @endguest
+                                    @endif
+                                    {{-- <button
                                         class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside"
-                                        data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
+                                        data-aside="cartDrawer" title="Add To Cart">Add To Cart</button> --}}
                                 </div>
 
                                 <div class="pc__info position-relative">
                                     {{-- <p class="pc__category">Dresses</p> --}}
                                     <h6 class="pc__title"><a
-                                            href="{{ route('shop.product.details') }}">{{ $product->name }}</a></h6>
+                                            href="{{ route('shop.product.details', ['product_slug' => $product->slug]) }}">{{ $product->name }}</a>
+                                    </h6>
                                     <div class="product-card__price d-flex">
                                         <span class="money price">
                                             @if ($product->sale_price)
-                                                <s>Rp{{ $product->regular_price }} </s> Rp{{ $rproduct->sale_price }}
+                                                <s>Rp{{ $product->regular_price }} </s> Rp{{ $product->sale_price }}
                                             @else
                                                 Rp{{ $product->regular_price }}
                                             @endif
@@ -453,15 +490,17 @@
                                         </div>
                                         <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
                                     </div>
-
-                                    <button
-                                        class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist"
-                                        title="Add To Wishlist">
-                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <use href="#icon_heart" />
-                                        </svg>
-                                    </button>
+                                    @guest
+                                    @else
+                                        <button
+                                            class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist"
+                                            title="Add To Wishlist">
+                                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <use href="#icon_heart" />
+                                            </svg>
+                                        </button>
+                                    @endguest
                                 </div>
                             </div>
                         </div>

@@ -29,7 +29,7 @@
                 </a>
             </div>
             <div class="shopping-cart">
-                @if ($item->count() > 0)
+                @if ($items->count() > 0)
                     <div class="cart-table__wrapper">
                         <table class="cart-table">
                             <thead>
@@ -47,26 +47,28 @@
                                     <tr>
                                         <td>
                                             <div class="shopping-cart__product-item">
-                                                <img loading="lazy" src="{{ asset('uploads/products/thumbnails') }}/{{ $item->model->image}}" width="120"
-                                                    height="120" alt="" />
+                                                <img loading="lazy"
+                                                    src="{{ asset('uploads/products/thumbnails') }}/{{ $item->model->image }}"
+                                                    width="120" height="120" alt="" />
                                             </div>
                                         </td>
                                         <td>
                                             {{-- Shop Page => Shopping Cart --}}
                                             <div class="shopping-cart__product-item__detail">
-                                                <h4>{{$item->name}}</h4>
+                                                <h4>{{ $item->name }}</h4>
                                                 <ul class="shopping-cart__product-item__options">
                                                     <li>Color: Yellow</li>
-                                                    <li>Size: L</li>                                               </ul>
+                                                    <li>Size: L</li>
+                                                </ul>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="shopping-cart__product-price">Rp{{$item->price}}</span>
+                                            <span class="shopping-cart__product-price">Rp{{ $item->price }}</span>
                                         </td>
                                         <td>
                                             <div class="qty-control position-relative">
-                                                <input type="number" name="quantity" value="{{ $item->qty}}" min="1"
-                                                    class="qty-control__number text-center">
+                                                <input type="number" name="quantity" value="{{ $item->qty }}"
+                                                    min="1" max="" class="qty-control__number text-center">
                                                 <div class="qty-control__reduce">-</div>
                                                 <div class="qty-control__increase">+</div>
                                             </div>
@@ -75,15 +77,20 @@
                                             <span class="shopping-cart__subtotal">Rp {{ $item->subTotal() }}</span>
                                         </td>
                                         <td>
-                                            <a href="#" class="remove-cart">
-                                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z" />
-                                                    <path
-                                                        d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
-                                                </svg>
-                                            </a>
+                                            <form action="{{ route('cart.item.remove', ['rowId' => $item->rowId]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="javascript:void(0)" class="remove-cart">
+                                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z" />
+                                                        <path
+                                                            d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
+                                                    </svg>
+                                                </a>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -143,3 +150,13 @@
         </section>
     </main>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('.remove-cart').on('click', function() {
+                $(this).closest('form').submit();
+            });
+        })
+    </script>
+@endpush
