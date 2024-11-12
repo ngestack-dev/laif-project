@@ -40,7 +40,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // 'admin' => [  // Guard baru untuk admin
+        //     'driver' => 'session',
+        //     'provider' => 'admins',
+        // ],   
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -64,6 +70,11 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+
+        // 'admins' => [  // Provider baru untuk admin
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\Admin::class, // Model admin yang akan dibuat
+        // ],
 
         // 'users' => [
         //     'driver' => 'database',

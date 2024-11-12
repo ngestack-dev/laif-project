@@ -113,9 +113,9 @@
                     <div class="product-single__price">
                         <span class="current-price">
                             @if ($product->sale_price)
-                                <s>Rp{{ $product->regular_price }} </s> Rp{{ $product->sale_price }}
+                                <s>Rp{{ $product->regular_price }}0 </s> Rp{{ $product->sale_price }}0
                             @else
-                                Rp{{ $product->regular_price }}
+                                Rp{{ $product->regular_price }}0
                             @endif
                         </span>
                     </div>

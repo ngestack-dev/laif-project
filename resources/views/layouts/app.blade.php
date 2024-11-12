@@ -273,7 +273,8 @@
 
             <div class="logo">
                 <a href="{{ route('home.index') }}">
-                    <img src="{{ asset('assets/images/logo-circle.png') }}" alt="Uomo" class="logo__image d-block" />
+                    <img src="{{ asset('assets/images/logo/PNG/Master Logo Laif Essentials-02.png') }}" alt="Laif"
+                        class="logo__image d-block" />
                 </a>
             </div>
 
@@ -315,7 +316,7 @@
                             <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
                         </li>
                         <li class="navigation__item">
-                            <a href="{{ route('shop.index')}}" class="navigation__link">Shop</a>
+                            <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
                         </li>
                         {{-- <li class="navigation__item">
                             <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
@@ -394,8 +395,8 @@
             <div class="header-desk header-desk_type_1">
                 <div class="logo my-auto">
                     <a href="{{ route('home.index') }}">
-                        <img src="{{ asset('assets/images/logo-circle.png') }}" alt="Uomo"
-                            class="logo__image d-block" width="80" height="80" />
+                        <img src="{{ asset('assets/images/logo/PNG/Master Logo Laif Essentials-02.png') }}" alt="Laif"
+                            class="logo__image d-block" width="" height=" " />
                     </a>
                 </div>
 
@@ -405,7 +406,7 @@
                             <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
                         </li>
                         <li class="navigation__item">
-                            <a href="{{ route('shop.index')}}" class="navigation__link">Shop</a>
+                            <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
                         </li>
                         {{-- <li class="navigation__item">
                             <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
@@ -480,6 +481,14 @@
                             </svg> --}}
                             </a>
                         </div>
+                        <div class="header-tools__item hover-container">
+                            <a href="{{ route('register') }}" class="navigation__link">Signup
+                                {{-- <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <use href="#icon_user" />
+                            </svg> --}}
+                            </a>
+                        </div>
                     @else
                         <div class="header-tools__item hover-container">
                             <a href="{{ Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index') }}"
@@ -499,28 +508,27 @@
 
                     @guest
                     @else
-                        <a href="wishlist.html" class="header-tools__item">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <use href="#icon_heart" />
-                            </svg>
-                        </a>
+                        {{-- @if (Auth::user()->utype === 'USR') --}}
+                            <a href="wishlist.html" class="header-tools__item">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_heart" />
+                                </svg>
+                            </a>
+                            <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
+                                <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_cart" />
+                                </svg>
+                                @if (Cart::instance('cart')->content()->count() > 0)
+                                    <span
+                                        class="cart-amount d-block position-absolute js-cart-items-count">{{ Cart::instance('cart')->content()->count() }}</span>
+                                @endif
+
+                            </a>
+                        {{-- @else
+                        @endif --}}
                     @endguest
-
-                    @guest
-                    @else
-                        <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
-                            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <use href="#icon_cart" />
-                            </svg>
-                            @if (Cart::instance('cart')->content()->count() > 0)
-                                <span
-                                    class="cart-amount d-block position-absolute js-cart-items-count">{{ Cart::instance('cart')->content()->count() }}</span>
-                            @endif
-
-                        @endguest
-                    </a>
                 </div>
             </div>
         </div>
@@ -536,8 +544,8 @@
                 <div class="footer-column footer-store-info col-12 mb-4 mb-lg-0">
                     <div class="logo">
                         <a href="{{ route('home.index') }}">
-                            <img src="{{ asset('assets/images/logo-circle.png') }}" alt="Laif"
-                                class="logo__image d-block" width="60" height="60" />
+                            <img src="{{ asset('assets/images/logo/PNG/Master Logo Laif Essentials-02.png') }}" alt="Laif"
+                                class="logo__image d-block" width="" height="" />
                         </a>
                     </div>
                     <p class="footer-address">123 Beach Avenue, Surfside City, CA 00000</p>

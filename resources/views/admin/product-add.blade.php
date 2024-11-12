@@ -24,7 +24,7 @@
                         <i class="icon-chevron-right"></i>
                     </li>
                     <li>
-                        <div class="text-tiny">Add product</div>
+                        <div class="text-tiny">Add Product</div>
                     </li>
                 </ul>
             </div>
@@ -126,7 +126,7 @@
                                     </span>
                                     <span class="body-text">Drop your images here or select <span class="tf-color">click
                                             to browse</span></span>
-                                    <input type="file" id="myFile" name="image" accept="image/*">
+                                    <input type="file" id="myFile" name="image" accept=".jpg, .jpeg, .png">
                                 </label>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                                     </span>
                                     <span class="text-tiny">Drop your images here or select <span class="tf-color">click
                                             to browse</span></span>
-                                    <input type="file" id="gFile" name="images[]" accept="image/*"
+                                    <input type="file" id="gFile" name="images[]" accept=".jpg, .jpeg, .png"
                                         multiple="">
                                 </label>
                             </div>
@@ -161,7 +161,7 @@
                     <div class="cols gap22">
                         <fieldset class="name">
                             <div class="body-title mb-10">Regular Price <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter regular price" name="regular_price"
+                            <input class="mb-10" type="text" placeholder="Enter regular price without .000" name="regular_price"
                                 tabindex="0" value="{{ old('regular_price') }}" aria-required="true" required="">
                         </fieldset>
                         @error('regular_price')
@@ -169,7 +169,7 @@
                         @enderror
                         <fieldset class="name">
                             <div class="body-title mb-10">Sale Price </div>
-                            <input class="mb-10" type="text" placeholder="Enter sale price" name="sale_price"
+                            <input class="mb-10" type="text" placeholder="Enter sale price without .000" name="sale_price"
                                 tabindex="0" value=" {{ old('sale_price') }}" aria-required="true" required="">
                         </fieldset>
                         @error('sale_price')

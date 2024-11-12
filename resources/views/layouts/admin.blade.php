@@ -42,8 +42,10 @@
                 <div class="section-menu-left">
                     <div class="box-logo">
                         <a class="mx-auto" href="{{ route('home.index') }}" id="site-logo-inner">
-                            <img class="" id="logo_header_1" alt="" src="{{ asset('images/logo/logo-circle.png')}}"
-                                data-light="{{ asset('images/logo/logo.png')}}" data-dark=" {{ asset('images/logo/logo.png')}} " width="80" height="80">
+                            <img class="" id="logo_header_1" alt=""
+                                src="{{ asset('assets/images/logo/PNG/Master Logo Laif Essentials-02.png') }}"
+                                data-light="{{ asset('images/logo/logo.png') }}"
+                                data-dark=" {{ asset('images/logo/logo.png') }} " width="100" height="100">
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
@@ -125,7 +127,7 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="orders.html" class="">
+                                            <a href="{{ route('admin.orders') }}" class="">
                                                 <div class="text">Orders</div>
                                             </a>
                                         </li>
@@ -136,38 +138,49 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="menu-item">
+                                {{-- <li class="menu-item">
                                     <a href="slider.html" class="">
                                         <div class="icon"><i class="icon-image"></i></div>
                                         <div class="text">Slider</div>
                                     </a>
-                                </li>
-                                <li class="menu-item">
+                                </li> --}}
+                                {{-- <li class="menu-item">
                                     <a href="coupons.html" class="">
                                         <div class="icon"><i class="icon-grid"></i></div>
                                         <div class="text">Coupons</div>
                                     </a>
-                                </li>
+                                </li> --}}
 
-                                <li class="menu-item">
+                                {{-- <li class="menu-item">
                                     <a href="users.html" class="">
                                         <div class="icon"><i class="icon-user"></i></div>
-                                        <div class="text">User</div>
+                                        <div class="text">Users</div>
                                     </a>
-                                </li>
+                                </li> --}}
 
-                                <li class="menu-item">
+                                @role('super-admin')
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.admins') }}" class="">
+                                            <div class="icon"><i class="icon-user"></i></div>
+                                            <div class="text">Admins</div>
+                                        </a>
+                                    </li>
+                                @endrole
+
+                                {{-- <li class="menu-item">
                                     <a href="settings.html" class="">
                                         <div class="icon"><i class="icon-settings"></i></div>
                                         <div class="text">Setting</div>
                                     </a>
-                                </li>
+                                </li> --}}
 
                                 <li class="menu-item">
                                     <form action="{{ route('logout') }}" method="POST" id="logout-form">
                                         @csrf
-                                        <a href="{{ route('logout') }}" class="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            <div class="icon"><i class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;"></i></div>
+                                        <a href="{{ route('logout') }}" class=""
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <div class="icon"><i class="fa fa-sign-out" aria-hidden="true"
+                                                    style="font-size: 20px;"></i></div>
                                             <div class="text">Logout</div>
                                         </a>
                                     </form>
@@ -401,7 +414,8 @@
                                             id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="header-user wg-user">
                                                 <span class="">
-                                                    <img src="{{ asset('images/avatar/pm.png')}}" alt="" width="40" height="40">
+                                                    <img src="{{ asset('images/avatar/pm.png') }}" alt=""
+                                                        width="40" height="40">
                                                 </span>
                                                 <span class="flex flex-column">
                                                     <span class="body-title mb-2">Nurdin</span>

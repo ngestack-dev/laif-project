@@ -51,10 +51,10 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'mobile' => ['required', 'digits_between:0,13', 'unique:users'],
+            'mobile' => ['required', 'digits_between:10,13', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
-            'mobile.digits_between' => 'The number must be maximum 13 digits.',
+            'mobile.digits_between' => 'The number must be between 10-13 digits.',
             'password.min' => 'The password must be at least 8 characters.'
         ]);
     }

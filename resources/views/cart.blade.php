@@ -63,18 +63,29 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="shopping-cart__product-price">Rp{{ $item->price }}</span>
+                                            <span class="shopping-cart__product-price">Rp{{ $item->price }}.000</span>
                                         </td>
                                         <td>
                                             <div class="qty-control position-relative">
                                                 <input type="number" name="quantity" value="{{ $item->qty }}"
-                                                    min="1" max="" class="qty-control__number text-center">
-                                                <div class="qty-control__reduce">-</div>
-                                                <div class="qty-control__increase">+</div>
+                                                    min="1" class="qty-control__number text-center">
+                                                <form method="POST"
+                                                    action="{{ route('cart.qty.decrease', ['rowId' => $item->rowId]) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="qty-control__reduce">-</div>
+                                                </form>
+
+                                                <form method="POST"
+                                                    action="{{ route('cart.qty.increase', ['rowId' => $item->rowId]) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="qty-control__increase">+</div>
+                                                </form>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="shopping-cart__subtotal">Rp {{ $item->subTotal() }}</span>
+                                            <span class="shopping-cart__subtotal">Rp {{ $item->subTotal() }}0</span>
                                         </td>
                                         <td>
                                             <form action="{{ route('cart.item.remove', ['rowId' => $item->rowId]) }}"
@@ -96,14 +107,14 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="cart-table-footer">
+                        {{-- <div class="cart-table-footer">
                             <form action="#" class="position-relative bg-body">
                                 <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code">
                                 <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
                                     value="APPLY COUPON">
                             </form>
                             <button class="btn btn-light">UPDATE CART</button>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="shopping-cart__totals-wrapper">
                         <div class="sticky-content">
@@ -133,16 +144,16 @@
                             </div>
                             <div class="mobile_fixed-btn_wrapper">
                                 <div class="button-wrapper container">
-                                    <a href="checkout.html" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
+                                    <a href="{{ route('cart.checkout') }}" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @else
-                    <div class="row">
-                        <div class="col-md 12 text-center pt-5 bp-5">
+                    <div class="row mx-auto">
+                        <div class="col-md-12 text-center fs-5 pt-5 bp-5">
                             <p>No item in cart</p>
-                            {{-- <a href="{{ route('shop.index') }}" class="btn btn-info">Shop Now</a> --}}
+                            <a href="{{ route('shop.index') }}" class="btn btn-info mx-auto d-block">Shop Now</a>
                         </div>
                     </div>
                 @endif
@@ -155,6 +166,16 @@
     <script>
         $(function() {
             $('.remove-cart').on('click', function() {
+                $(this).closest('form').submit();
+            });
+        })
+
+        $(function() {
+            $('.qty-control__increase').on('click', function() {
+                $(this).closest('form').submit();
+            });
+
+            $('.qty-control__reduce').on('click', function() {
                 $(this).closest('form').submit();
             });
         })

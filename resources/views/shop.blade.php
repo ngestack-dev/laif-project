@@ -233,7 +233,7 @@
             </div>
 
             <div class="shop-list flex-grow-1">
-                <div class="swiper-container js-swiper-slider slideshow slideshow_small slideshow_split"
+                {{-- <div class="swiper-container js-swiper-slider slideshow slideshow_small slideshow_split"
                     data-settings='{
             "autoplay": {
               "delay": 5000
@@ -327,7 +327,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="mb-3 pb-2 pb-xl-3"></div>
 
@@ -459,9 +459,9 @@
                                     <div class="product-card__price d-flex">
                                         <span class="money price">
                                             @if ($product->sale_price)
-                                                <s>Rp{{ $product->regular_price }} </s> Rp{{ $product->sale_price }}
+                                                <s>Rp{{ $product->regular_price }}0 </s> Rp{{ $product->sale_price }}0
                                             @else
-                                                Rp{{ $product->regular_price }}
+                                                Rp{{ $product->regular_price }}0
                                             @endif
                                         </span>
                                     </div>

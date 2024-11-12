@@ -33,8 +33,14 @@
                             </div>
                         </form>
                     </div>
-                    <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add new</a>
+                    <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add
+                        new</a>
                 </div>
+                @if (session('status'))
+                    <div class="alert alert-success fs-3">
+                        {{ session('status') }}
+                    </div>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
                         <thead>
@@ -56,33 +62,42 @@
                                     <td>{{ $product->id }}</td>
                                     <td class="pname">
                                         <div class="image">
-                                            <img src="{{ asset('uploads/products/thumbnails') }}/{{ $product->image }}" alt="{{ $product->name }}" class="image">
+                                            <img src="{{ asset('uploads/products/thumbnails') }}/{{ $product->image }}"
+                                                alt="{{ $product->name }}" class="image">
                                         </div>
                                         <div class="name">
                                             <a href="#" class="body-title-2">{{ $product->name }}</a>
                                             <div class="text-tiny mt-3">{{ $product->name }}</div>
                                         </div>
                                     </td>
-                                    <td>{{ $product->regular_price }}</td>
-                                    <td>{{ $product->sale_price }}</td>
+                                    <td>Rp{{ $product->regular_price }}0</td>
+                                    <td>
+                                        @if ($product->sale_price != null)
+                                            Rp{{ $product->sale_price }}0
+                                        @else
+                                            
+                                        @endif</td>
                                     <td>{{ $product->SKU }}</td>
                                     <td>{{ $product->featured == 1 ? 'Yes' : 'No' }}</td>
                                     <td>{{ $product->stock_status }}</td>
                                     <td>{{ $product->quantity }}</td>
                                     <td>
                                         <div class="list-icon-function">
-                                            <a href="#" target="_blank">
+                                            <a href="{{ route('admin.product.view', ['id' => $product->id]) }}" target="_blank">
                                                 <div class="item eye">
                                                     <i class="icon-eye"></i>
                                                 </div>
                                             </a>
-                                            <a href="#">
+                                            <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
                                                 <div class="item edit">
                                                     <i class="icon-edit-3"></i>
                                                 </div>
                                             </a>
-                                            <form action="#" method="POST">
-                                                <div class="item text-danger delete">
+                                            <form action="{{ route('admin.product.delete', ['id' => $product->id]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class="delete item text-danger">
                                                     <i class="icon-trash-2"></i>
                                                 </div>
                                             </form>
@@ -103,3 +118,25 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('.delete').on('click', function(e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                swal({
+                    title: "Are you sure?",
+                    text: "You want to delete this product?",
+                    type: "warning",
+                    buttons: ["Cancel", "Yes!"],
+                    confirmButtonColor: "#dc3545",
+                }).then(function(result) {
+                    if (result) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
