@@ -64,10 +64,10 @@
                                         <td class="text-center">${{ $order->total }}</td>
                                         <td class="text-center">{{ $order->status }}</td>
                                         <td class="text-center">{{ $order->created_at }}</td>
-                                        <td class="text-center">{{ $order->orderItems->count()}}</td>
+                                        <td class="text-center">{{ $order->orderItems->count() }}</td>
                                         <td class="text-center">{{ $order->delivered_date }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('admin.order.details', ['order_id' => $order->id])}}">
+                                            <a href="{{ route('admin.order.details', ['order_id' => $order->id]) }}">
                                                 <div class="list-icon-function view-icon">
                                                     <div class="item eye">
                                                         <i class="icon-eye"></i>
@@ -80,6 +80,12 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-success d-flex align-items-center fs-5" href="{{ route('export.orders') }}">
+                        <i class="fa fa-download me-2" aria-hidden="true" style="font-size: 20px;"></i>
+                        Export to Excel
+                    </a>
                 </div>
                 <div class="divider"></div>
                 <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">

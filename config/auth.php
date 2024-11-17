@@ -41,9 +41,13 @@ return [
             'provider' => 'users',
         ],
 
-        // 'admin' => [  // Guard baru untuk admin
+        'admin' => [  // Guard baru untuk admin
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        // 'super-admin' => [
         //     'driver' => 'session',
-        //     'provider' => 'admins',
+        //     'provider' => 'admins', // Gunakan provider yang sesuai dengan pengguna super-admin
         // ],   
     ],
 
@@ -71,10 +75,10 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'admins' => [  // Provider baru untuk admin
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\Admin::class, // Model admin yang akan dibuat
-        // ],
+        'admins' => [  // Provider baru untuk admin
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class, // Model admin yang akan dibuat
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

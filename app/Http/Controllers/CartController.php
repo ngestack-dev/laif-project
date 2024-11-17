@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrdersExport;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class CartController extends Controller
 {
@@ -155,5 +156,10 @@ class CartController extends Controller
             return view('order-confirmation', compact('order'));
         }
         return redirect()->route('cart.index');
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrdersExport, 'orders.xlsx');
     }
 }

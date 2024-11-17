@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -93,4 +94,12 @@ class UserController extends Controller
         Admin::destroy($id);
         return redirect()->route('admin.admins')->with('success', 'Admin deleted successfully');
     }
+
+    public function viewActivityLogs()
+    {
+        $logs = ActivityLog::with('admin')->latest()->paginate(10);
+        return view('super-admin.logactivity', compact('logs'));
+    }
+
+
 }

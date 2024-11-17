@@ -2,20 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\About;
+use App\Models\ActivityLog;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Laravel\Facades\Image;
 
 class AdminController extends Controller
 {
+    /**
+     * Show the login form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function adminLoginForm()
+    {
+        return view('admin.admin-login'); // Pastikan ada view dengan nama admin/login.blade.php
+    }
+
+    public function adminLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->route('admin.index');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
+    public function AdminLogout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/admin/login');
+    }
+
     public function index()
     {
+        // $user = Auth::guard('admin')->user();
+
         return view('admin.index');
     }
 
@@ -98,6 +138,12 @@ class AdminController extends Controller
         }
         $product->images = $gallery_images;
         $product->save();
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Created a new product: ' . $product->name,
+        ]);
+
         return redirect()->route('admin.products')->with('status', 'Product has been added successfully');
     }
 
@@ -134,12 +180,12 @@ class AdminController extends Controller
             'sale_price' => 'nullable',
             'SKU' => 'required',
             'quantity' => 'required',
-            'image' => 'mimes:png,jpg,jpeg | max: 15680',
+            'image' => 'mimes:png,jpg,jpeg | max: 2048',
             'featured' => 'required',
             'stock_status' => 'required',
         ], [
             'image.mimes' => 'Hanya file dengan ekstensi jpeg, png, jpg, atau gif yang diizinkan.',
-            'image.max' => 'Ukuran file tidak boleh lebih dari 15MB.',
+            'image.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         $product = Product::find($request->id);
@@ -201,6 +247,12 @@ class AdminController extends Controller
         }
 
         $product->save();
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Updated a product: ' . $product->name,
+        ]);
+
         return redirect()->route('admin.products')->with('status', 'Product has been updated successfully');
     }
 
@@ -224,6 +276,12 @@ class AdminController extends Controller
         }
 
         $product->delete();
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Deleted a product: ' . $product->name,
+        ]);
+
         return redirect()->route('admin.products')->with('status', 'Product has been deleted successfully');
     }
 
@@ -256,6 +314,11 @@ class AdminController extends Controller
         }
         $order->save();
 
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Updated a order: ' . $order->name,
+        ]);
+
         if ($request->order_status == 'delivered')
         {
             $transaction = Transaction::where('order_id', $request->order_id)->first();
@@ -264,5 +327,58 @@ class AdminController extends Controller
         }
 
         return back()->with('status', 'Order status has been updated successfully');
+    }
+
+    public function edit_about()
+    {
+        // Mengambil data about yang pertama (asumsi hanya ada 1 row data)
+        $about = About::first();
+
+        return view('admin.about-edit', compact('about'));
+    }
+
+    public function update_about(Request $request)
+    {
+        $validatedData = $request->validate([
+            'address' => 'required|string',
+            'story' => 'required|string',
+            'vision' => 'required|string',
+            'mission' => 'required|string',
+            'about_laif' => 'required|string',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'image.mimes' => 'Hanya file dengan ekstensi jpeg, png, dan jpg yang diizinkan.',
+            'image.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
+        ]);
+
+        // Mengambil data about yang pertama
+        $about = About::first();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('assets/images/about'), $imageName);
+            $validatedData['image'] = $imageName;
+
+            // Jika ada gambar lama, hapus gambar lama
+            if ($about && $about->image) {
+                unlink(public_path('assets/images/about/' . $about->image));
+            }
+        }
+
+        // Update data dalam database
+        if ($about) {
+            $about->update($validatedData);
+        } else {
+            About::create($validatedData);
+        }
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Updated an about ',
+        ]);
+
+        return redirect()->route('about.edit')->with('success', 'About updated successfully.');
     }
 }

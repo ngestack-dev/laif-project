@@ -41,7 +41,7 @@
 
                 <div class="section-menu-left">
                     <div class="box-logo">
-                        <a class="mx-auto" href="{{ route('home.index') }}" id="site-logo-inner">
+                        <a class="mx-auto" href="javascript:void(0);" id="site-logo-inner">
                             <img class="" id="logo_header_1" alt=""
                                 src="{{ asset('assets/images/logo/PNG/Master Logo Laif Essentials-02.png') }}"
                                 data-light="{{ asset('images/logo/logo.png') }}"
@@ -54,6 +54,10 @@
                     <div class="center">
                         <div class="center-item">
                             <div class="center-heading mt-5">Main Home</div>
+                            {{-- @if (Auth::guard('admin')->check())
+                                <p>Roles pengguna:
+                                    {{ implode(', ', Auth::guard('admin')->user()->getRoleNames()->toArray()) }}</p>
+                            @endif --}}
                             <ul class="menu-list">
                                 <li class="menu-item">
                                     <a href="{{ route('admin.index') }}" class="">
@@ -158,6 +162,13 @@
                                     </a>
                                 </li> --}}
 
+                                <li class="menu-item">
+                                    <a href="{{ route('about.edit') }}" class="">
+                                        <div class="icon"><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 20px;"></i></div>
+                                        <div class="text">About</div>
+                                    </a>
+                                </li>
+
                                 @role('super-admin')
                                     <li class="menu-item">
                                         <a href="{{ route('admin.admins') }}" class="">
@@ -167,17 +178,20 @@
                                     </li>
                                 @endrole
 
-                                {{-- <li class="menu-item">
-                                    <a href="settings.html" class="">
-                                        <div class="icon"><i class="icon-settings"></i></div>
-                                        <div class="text">Setting</div>
-                                    </a>
-                                </li> --}}
+
+                                @role('super-admin')
+                                    <li class="menu-item">
+                                        <a href="{{ route('admin.activity-logs') }}" class="">
+                                            <div class="icon"><i class="fa fa-address-book-o" aria-hidden="true"></i></div>
+                                            <div class="text">Admin Log</div>
+                                        </a>
+                                    </li>
+                                @endrole
 
                                 <li class="menu-item">
-                                    <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                                    <form action="{{ route('admin.logout') }}" method="POST" id="logout-form">
                                         @csrf
-                                        <a href="{{ route('logout') }}" class=""
+                                        <a href="{{ route('admin.logout') }}" class=""
                                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             <div class="icon"><i class="fa fa-sign-out" aria-hidden="true"
                                                     style="font-size: 20px;"></i></div>
@@ -418,8 +432,8 @@
                                                         width="40" height="40">
                                                 </span>
                                                 <span class="flex flex-column">
-                                                    <span class="body-title mb-2">Nurdin</span>
-                                                    <span class="text-tiny">Project Manager</span>
+                                                    <span class="body-title mb-2">{{ Auth::user()->name }}</span>
+                                                    <span class="text-tiny">{{ Auth::user()->position }}</span>
                                                 </span>
                                             </span>
                                         </button>

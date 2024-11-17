@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthAdmin;
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\LogActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+Route::get('/about', [HomeController::class, 'about'])->name('home.about');
+
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
 
@@ -31,8 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
 });
 
+Route::get('/admin/login', [AdminController::class, 'adminLoginForm'])->name('admin.login.form');
+Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
+Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
 
-Route::middleware('auth', AuthAdmin::class )->group(function () {
+
+Route::middleware(['auth:admin', CheckRole::class . ':super-admin,admin', LogActivity::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/admin/product/add', [AdminController::class, 'product_add'])->name('admin.product.add');
@@ -45,11 +54,23 @@ Route::middleware('auth', AuthAdmin::class )->group(function () {
     Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::get('/admin/order/{order_id}/details', [AdminController::class, 'order_details'])->name('admin.order.details');
     Route::put('/admin/order/update-status', [AdminController::class, 'update_order_status'])->name('admin.order.status.update');
+    Route::get('/export-orders', [CartController::class, 'export'])->name('export.orders');
 
-    Route::get('/admin/admins', [UserController::class, 'admins'])->name('admin.admins');
-    Route::get('/admin/admin/add', [UserController::class, 'admin_add'])->name('admin.admins.add');
-    Route::post('/admin/admin/store', [UserController::class, 'admin_store'])->name('admin.admins.store');
-    Route::get('/admin/admin/{id}/edit', [UserController::class, 'admin_edit'])->name('admin.admins.edit');
-    Route::put('/admin/admin/update', [UserController::class, 'admin_update'])->name('admin.admins.update');
-    Route::delete('/admin/admin/{id}/delete', [UserController::class, 'admin_delete'])->name('admin.admins.delete');
+    Route::get('/admin/about/edit', [AdminController::class, 'edit_about'])->name('about.edit');
+    Route::put('/admin/about/update', [AdminController::class, 'update_about'])->name('about.update');
 });
+
+Route::middleware(['auth:admin', CheckRole::class . ':super-admin'])->group(
+    function () {
+        Route::get('/admin/admins', [UserController::class, 'admins'])->name('admin.admins');
+        Route::get('/admin/admin/add', [UserController::class, 'admin_add'])->name('admin.admins.add');
+        Route::post('/admin/admin/store', [UserController::class, 'admin_store'])->name('admin.admins.store');
+        Route::get('/admin/admin/{id}/edit', [UserController::class, 'admin_edit'])->name('admin.admins.edit');
+        Route::put('/admin/admin/update', [UserController::class, 'admin_update'])->name('admin.admins.update');
+        Route::delete('/admin/admin/{id}/delete', [UserController::class, 'admin_delete'])->name('admin.admins.delete');
+
+        Route::get('/admin/activity-logs', [UserController::class, 'viewActivityLogs'])->name('admin.activity-logs');
+
+
+    }
+);

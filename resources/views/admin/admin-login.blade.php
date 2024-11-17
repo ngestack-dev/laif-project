@@ -76,13 +76,13 @@
             <ul class="nav nav-tabs mb-5" id="login_register" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link nav-link_underscore active" id="login-tab" data-bs-toggle="tab" href="#tab-item-login"
-                        role="tab" aria-controls="tab-item-login" aria-selected="true">Login</a>
+                        role="tab" aria-controls="tab-item-login" aria-selected="true"><i class="fa fa-user-secret" aria-hidden="true" style="font-size: 50px;"></i></a>
                 </li>
             </ul>
             <div class="tab-content pt-2" id="login_register_tab_content">
                 <div class="tab-pane fade show active" id="tab-item-login" role="tabpanel" aria-labelledby="login-tab">
                     <div class="login-form">
-                        <form method="POST" action="{{ route('login') }}" name="login-form" class="needs-validation" novalidate="">
+                        <form method="POST" action="{{ route('admin.login') }}" name="login-form" class="needs-validation" novalidate="">
                             @csrf
                             <div class="form-floating mb-3">
                                 <input class="form-control form-control_gray @error('email') is-invalid @enderror" name="email" value="" required="" 
@@ -108,13 +108,13 @@
                                 @enderror
                             </div>
 
-                            <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In</button>
+                            <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In as Admin</button>
 
-                            <div class="customer-option mt-4 text-center">
+                            {{-- <div class="customer-option mt-4 text-center">
                                 <span class="text-secondary">No account yet?</span>
                                 <a href="{{ route('register') }}" class="btn-text js-show-register">Create Account</a><br>
-                                <a href="{{ route('admin.login.form') }}" class="btn-text js-show-register  text-red">Admin only</a>
-                            </div>
+                                <a href="{{ route('register') }}" class="btn-text js-show-register">Admin only</a>
+                            </div> --}}
                         </form>
                     </div>
                 </div>
