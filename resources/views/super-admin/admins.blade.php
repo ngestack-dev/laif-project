@@ -23,9 +23,9 @@
             <div class="wg-box">
                 <div class="flex items-center justify-between gap10 flex-wrap">
                     <div class="wg-filter flex-grow">
-                        <form class="form-search">
+                        <form class="form-search" action="{{ route('admin.search.admin')}}" method="GET">
                             <fieldset class="name">
-                                <input type="text" placeholder="Search here..." class="" name="name"
+                                <input type="text" placeholder="Search here..." class="" name="query"
                                     tabindex="2" value="" aria-required="true" required="">
                             </fieldset>
                             <div class="button-submit">
@@ -53,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($admins as $admin)
+                            @forelse ($admins as $admin)
                                 <tr>
                                     <td>{{ $admin->id }}</td>
                                     <td>{{ $admin->name }}</td>
@@ -82,7 +82,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="text-center" colspan="5">Admin not found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

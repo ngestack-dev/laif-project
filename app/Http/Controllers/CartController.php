@@ -67,7 +67,7 @@ class CartController extends Controller
         if (!$address) {
             $request->validate([
                 'name' => 'required',
-                'phone' => 'required',
+                'mobile' => 'required',
                 'address' => 'required',
                 'zip_code' => 'required|numeric|digits:5',
                 'city' => 'required',
@@ -77,7 +77,7 @@ class CartController extends Controller
             $address = new Address();
             $address->user_id = $user_id;
             $address->name = $request->name;
-            $address->phone = $request->phone;
+            $address->mobile = $request->mobile;
             $address->address = $request->address;
             $address->zip_code = $request->zip_code;
             $address->city = $request->city;
@@ -92,15 +92,18 @@ class CartController extends Controller
         $order->user_id = $user_id;
         $order->subtotal = Session::get('checkout')['subtotal'];
         // $order->discount = Session::get('checkout')['discount'];
-        $order->tax = Session::get('checkout')['tax'];
-        $order->total = Session::get('checkout')['total'];
+        $subtotal = Session::get('checkout')['subtotal'];
+        $taxAmount = $subtotal * 0.10;
+        $order->tax = $taxAmount;
+        $order->total = $order->subtotal + $order->tax;
         $order->name = $address->name;
-        $order->phone = $address->phone;
+        $order->phone = $address->mobile;
         $order->address = $address->address;
         $order->zip_code = $address->zip_code;
         $order->city = $address->city;
         $order->province = $address->province;
         $order->save();
+
 
         foreach (Cart::instance('cart')->content() as $item) {
             $orderItem = new OrderItem();
@@ -110,21 +113,19 @@ class CartController extends Controller
             $orderItem->price = $item->price;
             $orderItem->save();
         }
-        if ($request->mode == 'bank')
-        {
-            //
-        }
-        elseif ($request->mode == 'e_wallet')
-        {
-            //
-        }
-        elseif ($request->mode == 'cod') 
-        {
+
+        if ($request->mode == 'bank') {
+            // return redirect()->back()->with('info', 'Bank payment is not available yet');
+        } elseif ($request->mode == 'e_wallet') {
+            // return redirect()->back()->with('info', 'E-wallet payment is not available yet');
+        } elseif ($request->mode == 'cod') {
             $transaction = new Transaction();
             $transaction->user_id = $user_id;
             $transaction->order_id = $order->id;
             $transaction->status = 'pending';
             $transaction->save();
+        } else {
+            return redirect()->back()->with('error', 'Must select one of the payment method');
         }
 
         Cart::instance('cart')->destroy();
@@ -150,16 +151,10 @@ class CartController extends Controller
 
     public function order_confirmation()
     {
-        if (Session::has('order_id')) 
-        {
+        if (Session::has('order_id')) {
             $order = Order::find(Session::get('order_id'));
             return view('order-confirmation', compact('order'));
         }
         return redirect()->route('cart.index');
-    }
-
-    public function export()
-    {
-        return Excel::download(new OrdersExport, 'orders.xlsx');
     }
 }

@@ -2,7 +2,7 @@
 @section('content')
     <main class="pt-90">
         <section class="shop-main container d-flex pt-4 pt-xl-5">
-            <div class="shop-sidebar side-sticky bg-body" id="shopFilter">
+            {{-- <div class="shop-sidebar side-sticky bg-body" id="shopFilter">
                 <div class="aside-header d-flex d-lg-none align-items-center">
                     <h3 class="text-uppercase fs-6 mb-0">Filter By</h3>
                     <button class="btn-close-lg js-close-aside btn-close-aside ms-auto"></button>
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
 
                 {{-- <div class="accordion" id="color-filters">
@@ -196,7 +196,7 @@
                 </div> --}}
 
 
-                <div class="accordion" id="price-filters">
+                {{-- <div class="accordion" id="price-filters">
                     <div class="accordion-item mb-4">
                         <h5 class="accordion-header mb-2" id="accordion-heading-price">
                             <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button"
@@ -229,7 +229,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <div class="shop-list flex-grow-1">
@@ -331,7 +331,7 @@
 
                 <div class="mb-3 pb-2 pb-xl-3"></div>
 
-                <div class="d-flex justify-content-between mb-4 pb-md-2">
+                {{-- <div class="d-flex justify-content-between mb-4 pb-md-2">
                     <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
                         <a href="{{ route('home.index') }}"
                             class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
@@ -377,7 +377,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="products-grid row row-cols-2 row-cols-md-3" id="products-grid">
                     @foreach ($products as $product)
@@ -459,13 +459,13 @@
                                     <div class="product-card__price d-flex">
                                         <span class="money price">
                                             @if ($product->sale_price)
-                                                <s>Rp{{ $product->regular_price }}0 </s> Rp{{ $product->sale_price }}0
+                                                Rp<s>{{ number_format($product->regular_price, 3, ',', '.') }}</s> {{ number_format($product->sale_price, 3, '.', '.') }}
                                             @else
-                                                Rp{{ $product->regular_price }}0
+                                                Rp{{ number_format($product->regular_price, 3, '.', '.') }}
                                             @endif
                                         </span>
                                     </div>
-                                    <div class="product-card__review d-flex align-items-center">
+                                    {{-- <div class="product-card__review d-flex align-items-center">
                                         <div class="reviews-group d-flex">
                                             <svg class="review-star" viewBox="0 0 9 9"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -488,9 +488,9 @@
                                                 <use href="#icon_star" />
                                             </svg>
                                         </div>
-                                        <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
-                                    </div>
-                                    @guest
+                                        {{-- <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
+                                    </div> --}}
+                                    {{-- @guest
                                     @else
                                         <button
                                             class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist"
@@ -500,7 +500,7 @@
                                                 <use href="#icon_heart" />
                                             </svg>
                                         </button>
-                                    @endguest
+                                    @endguest --}}
                                 </div>
                             </div>
                         </div>

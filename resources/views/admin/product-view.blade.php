@@ -5,7 +5,7 @@
         <!-- main-content-wrap -->
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Add Product</h3>
+                <h3>View Product</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="{{ route('admin.index') }}">
@@ -169,12 +169,13 @@
                         <fieldset class="name">
                             <div class="body-title mb-10">Regular Price <span class="tf-color-1"></span></div>
                             <input class="mb-10" type="text" placeholder="Enter regular price" name="regular_price"
-                                tabindex="0" value="{{ $product->regular_price }}0" aria-required="true"
+                                tabindex="0" value="Rp{{ number_format($product->regular_price, 3, '.', '.') }}" aria-required="true"
                                 required="" readonly>
                         </fieldset>
                         @error('regular_price')
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
+                        @role('super-admin')
                         <fieldset class="name">
                             <div class="body-title mb-10">Sale Price </div>
                             <input class="mb-10" type="text" placeholder="" name="sale_price"
@@ -183,6 +184,7 @@
                         @error('sale_price')
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
+                        @endrole
                     </div>
 
 
@@ -196,6 +198,7 @@
                         @error('SKU')
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
+                        @role('super-admin')
                         <fieldset class="name">
                             <div class="body-title mb-10">Quantity <span class="tf-color-1"></span>
                             </div>
@@ -205,8 +208,9 @@
                         @error('quantity')
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
+                        @endrole
                     </div>
-
+                    @role('super-admin')
                     <div class="cols gap22">
                         <fieldset class="name">
                             <div class="body-title mb-10">Stock</div>
@@ -236,6 +240,7 @@
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
                     </div>
+                    @endrole
                     {{-- <div class="cols gap10">
                         <a href="{{ route('admin.products') }}">
                             <button class="tf-button w-full" type="">Back to Products</button>

@@ -4,7 +4,7 @@
     <main class="pt-90">
         <div class="mb-4 pb-4"></div>
         <section class="shop-checkout container">
-            <h2 class="page-title">Order Received</h2>
+            <h2 class="page-title">Order Sent</h2>
             <div class="checkout-steps">
                 <a href="javascript:void(0)" class="checkout-steps__item active">
                     <span class="checkout-steps__item-number">01</span>
@@ -24,7 +24,7 @@
                     <span class="checkout-steps__item-number">03</span>
                     <span class="checkout-steps__item-title">
                         <span>Confirmation</span>
-                        <em>Review And Submit Your Order</em>
+                        <em>Review Your Order</em>
                     </span>
                 </a>
             </div>
@@ -38,7 +38,7 @@
                             fill="white" />
                     </svg>
                     <h3>Your order is completed!</h3>
-                    <p>Thank you. Your order has been received.</p>
+                    <p>Thank you. Your order soon will be processed.</p>
                 </div>
                 <div class="order-info">
                     <div class="order-info__item">
@@ -47,15 +47,15 @@
                     </div>
                     <div class="order-info__item">
                         <label>Date</label>
-                        <span>{{ $order->created_at }}</span>
+                        <span>{{ $order->created_at->format('d M Y H:i') }}</span>
                     </div>
                     <div class="order-info__item">
                         <label>Total</label>
-                        <span>${{ $order->total }}</span>
+                        <span>Rp{{ number_format($order->total, 3, '.', '.') }}</span>
                     </div>
                     <div class="order-info__item">
                         <label>Payment Method</label>
-                        <span>{{ $order->transaction->mode }}</span>
+                        <span class="text-uppercase">{{ $order->transaction->mode }}</span>
                     </div>
                 </div>
                 <div class="checkout__totals-wrapper">
@@ -75,7 +75,7 @@
                                             {{ $item->product->name }} x {{ $item->quantity }}
                                         </td>
                                         <td class="text-right">
-                                            ${{ $item->price }}
+                                            Rp{{ number_format($item->price, 3, '.', '.') }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -85,22 +85,29 @@
                             <tbody>
                                 <tr>
                                     <th>SUBTOTAL</th>
-                                    <td class="text-right">${{ $order->subtotal}}</td>
+                                    <td class="text-right">Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
                                 </tr>
                                 <tr>
                                     <th>SHIPPING</th>
                                     <td class="text-right">Free shipping</td>
                                 </tr>
                                 <tr>
-                                    <th>VAT</th>
-                                    <td class="text-right">{{ $order->tax}}</td>
+                                    <th>TAX</th>
+                                    <td class="text-right">Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
                                 </tr>
                                 <tr>
                                     <th>TOTAL</th>
-                                    <td class="text-right" >${{ $order->total}}</td>
+                                    <td class="text-right">Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <a href="{{ route('user.orders') }}">
+                            <button type="submit" class="btn btn-primary">See my orders</button>
+                        </a>
                     </div>
                 </div>
             </div>

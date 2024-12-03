@@ -57,8 +57,8 @@
                                             <div class="shopping-cart__product-item__detail">
                                                 <h4>{{ $item->name }}</h4>
                                                 <ul class="shopping-cart__product-item__options">
-                                                    <li>Color: Yellow</li>
-                                                    <li>Size: L</li>
+                                                    <li>{{ $item->short_description }}</li>
+                                                    {{-- <li>Size: L</li> --}}
                                                 </ul>
                                             </div>
                                         </td>
@@ -124,7 +124,7 @@
                                     <tbody>
                                         <tr>
                                             <th>Subtotal</th>
-                                            <td>Rp {{ Cart::instance('cart')->subtotal() }}</td>
+                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal(), 3, '.', '.') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Shipping</th>
@@ -132,12 +132,12 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>VAT</th>
-                                            <td>Rp {{ Cart::instance('cart')->tax() }}</td>
+                                            <th>TAX</th>
+                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal() * 0.10, 3, '.', '.') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Total</th>
-                                            <td>Rp {{ Cart::instance('cart')->total() }}</td>
+                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal() * 1.10, 3, '.', '.') }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -27,33 +27,34 @@
                     </span>
                 </a>
             </div>
-            <form name="checkout-form" action="{{ route('cart.place.an.order')}}" method="POST">
+            <form name="checkout-form" action="{{ route('cart.place.an.order') }}" method="POST">
                 @csrf
                 <div class="checkout-form">
                     <div class="billing-info__wrapper">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-6 mb-5">
                                 <h4>SHIPPING DETAILS</h4>
                             </div>
                             <div class="col-6">
                             </div>
                         </div>
                         @if ($address)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="my-account__address-list">
-                                        <div class="my-account__address-list-item">
-                                            <div class="my-account__address-list-item__detail">
-                                                <p>{{ $address->name }}</p>
-                                                <p>{{ $address->address }}</p>
-                                                <p>{{ $address->landmark }}</p>
-                                                <p>{{ $address->city }}</p>
-                                                {{-- {{ $address->state }},  --}}
-                                                {{-- {{ $address->country }},  --}}
-                                                <p>{{ $address->zip_code }}</p>
-                                                <br>
-                                                <p>{{ $address->phone }}</p>
-                                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="card shadow-sm border-0">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary fw-bold">{{ $address->name }}</h5>
+                                            <p class="card-text text-muted mb-1">{{ $address->address }}</p>
+                                            <p class="card-text text-muted mb-1">{{ $address->city }},
+                                                {{ $address->province }}</p>
+                                            <p class="card-text text-muted mb-1">Kode Pos: {{ $address->zip_code }}</p>
+                                            <p class="card-text text-muted">No Telp: {{ $address->mobile }}</p>
+                                        </div>
+                                        <div class="card-footer text-end bg-light">
+                                            <a href="{{ route('user.address.edit', $address->id) }}"
+                                                class="btn btn-outline-primary btn-sm">
+                                                Edit Address
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +71,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating my-3">
-                                        <input type="text" class="form-control" name="phone" required=""
+                                        <input type="text" class="form-control" name="mobile" required=""
                                             value="{{ Auth::user()->mobile }}" readonly>
                                         <label for="phone">Phone Number *</label>
                                         @error('phone')
@@ -163,29 +164,34 @@
                                     <tbody>
                                         <tr>
                                             <th>SUBTOTAL</th>
-                                            <td align="right">{{ Cart::instance('cart')->subtotal() }}</td>
+                                            <td align="right">
+                                                Rp{{ number_format(Cart::instance('cart')->subtotal(), 3, '.', '.') }}</td>
                                         </tr>
                                         <tr>
                                             <th>SHIPPING</th>
                                             <td align="right">Free shipping</td>
                                         </tr>
                                         <tr>
-                                            <th>VAT</th>
-                                            <td align="right">${{ Cart::instance('cart')->tax() }}</td>
+                                            <th>TAX</th>
+                                            <td align="right">
+                                                Rp{{ number_format(Cart::instance('cart')->subtotal() * 0.1, 3, '.', '.') }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>TOTAL</th>
-                                            <td align="right">${{ Cart::instance('cart')->total() }}</td>
+                                            <td align="right">
+                                                Rp{{ number_format(Cart::instance('cart')->subtotal() * 1.1, 3, '.', '.') }}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="checkout__payment-methods">
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio"
-                                        name="mode" id="mode1" value="bank">
+                                    {{-- <input class="form-check-input form-check-input_fill" type="radio" name="mode"
+                                        id="mode1" value="bank"> --}}
                                     <label class="form-check-label" for="mode1">
-                                        Bank transfer
+                                        Bank transfer (belum tersedia)
                                     </label>
                                 </div>
                                 {{-- <div class="form-check">
@@ -203,15 +209,15 @@
                                     </label>
                                 </div> --}}
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio"
-                                    name="mode" id="mode2" value="e_wallet">
+                                    {{-- <input class="form-check-input form-check-input_fill" type="radio" name="mode"
+                                        id="mode2" value="e_wallet"> --}}
                                     <label class="form-check-label" for="mode2">
-                                        E-wallet                                      
+                                        E-wallet (belum tersedia)
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input form-check-input_fill" type="radio"
-                                        name="mode" id="mode3" value="cod">
+                                    <input class="form-check-input form-check-input_fill" type="radio" name="mode"
+                                        id="mode3" value="cod">
                                     <label class="form-check-label" for="mode3">
                                         Cash on delivery
                                     </label>
@@ -224,6 +230,15 @@
                                         policy</a>.
                                 </div>
                             </div>
+                            @if (session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @elseif (session('info'))
+                                <div class="alert alert-info">
+                                    {{ session('info') }}
+                                </div>
+                            @endif
                             <button class="btn btn-primary btn-checkout">PLACE ORDER</button>
                         </div>
                     </div>

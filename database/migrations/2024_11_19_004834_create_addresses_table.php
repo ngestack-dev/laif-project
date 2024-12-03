@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
+            $table->string('mobile');
             // $table->string('locality');
             $table->text('address');
             $table->string('city');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreign('mobile')->references('mobile')->on('users')->onDelete('cascade');
         });
     }
 

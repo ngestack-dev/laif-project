@@ -11,10 +11,13 @@ class About extends Model
 
     protected $fillable = [
         'address',
-        'our_story',
+        'story',
         'vision',
         'mission',
-        'laif_essential',
+        'about_laif',
+        'email_laif',
+        'phone_laif',
+        'instagram',
         'image'
     ];
 }

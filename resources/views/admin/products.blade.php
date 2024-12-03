@@ -23,18 +23,20 @@
             <div class="wg-box">
                 <div class="flex items-center justify-between gap10 flex-wrap">
                     <div class="wg-filter flex-grow">
-                        <form class="form-search">
+                        <form class="form-search" action="{{ route('admin.search.product') }}" method="GET">
                             <fieldset class="name">
-                                <input type="text" placeholder="Search here..." class="" name="name"
-                                    tabindex="2" value="" aria-required="true" required="">
+                                <input type="text" placeholder="Search here..." class="" name="query"
+                                    id="search-input" tabindex="2" value="" aria-required="true" required="">
                             </fieldset>
                             <div class="button-submit">
                                 <button class="" type="submit"><i class="icon-search"></i></button>
                             </div>
                         </form>
                     </div>
-                    <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add
-                        new</a>
+                    @role('super-admin')
+                        <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i class="icon-plus"></i>Add
+                            new</a>
+                    @endrole
                 </div>
                 @if (session('status'))
                     <div class="alert alert-success fs-3">
@@ -57,9 +59,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $product)
+                            @forelse ($products as $product)
                                 <tr>
-                                    <td>{{ $product->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td class="pname">
                                         <div class="image">
                                             <img src="{{ asset('uploads/products/thumbnails') }}/{{ $product->image }}"
@@ -70,41 +72,50 @@
                                             <div class="text-tiny mt-3">{{ $product->name }}</div>
                                         </div>
                                     </td>
-                                    <td>Rp{{ $product->regular_price }}0</td>
+                                    <td>Rp{{ number_format($product->regular_price, 3, '.', '.') }}</td>
                                     <td>
                                         @if ($product->sale_price != null)
-                                            Rp{{ $product->sale_price }}0
+                                            Rp{{ number_format($product->sale_price, 3, '.', '.') }}
                                         @else
-                                            
-                                        @endif</td>
+                                        @endif
+                                    </td>
                                     <td>{{ $product->SKU }}</td>
                                     <td>{{ $product->featured == 1 ? 'Yes' : 'No' }}</td>
                                     <td>{{ $product->stock_status }}</td>
                                     <td>{{ $product->quantity }}</td>
                                     <td>
                                         <div class="list-icon-function">
-                                            <a href="{{ route('admin.product.view', ['id' => $product->id]) }}" target="_blank">
+                                            <a href="{{ route('admin.product.view', ['id' => $product->id]) }}"
+                                                target="_blank">
                                                 <div class="item eye">
                                                     <i class="icon-eye"></i>
                                                 </div>
                                             </a>
-                                            <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
-                                                <div class="item edit">
-                                                    <i class="icon-edit-3"></i>
-                                                </div>
-                                            </a>
-                                            <form action="{{ route('admin.product.delete', ['id' => $product->id]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div class="delete item text-danger">
-                                                    <i class="icon-trash-2"></i>
-                                                </div>
-                                            </form>
+                                            @role('super-admin')
+                                                <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
+                                                    <div class="item edit">
+                                                        <i class="icon-edit-3"></i>
+                                                    </div>
+                                                </a>
+                                                <form action="{{ route('admin.product.delete', ['id' => $product->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="delete item text-danger">
+                                                        <i class="icon-trash-2"></i>
+                                                    </div>
+                                                </form>
+                                            @endrole
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="text-center" colspan="9">
+                                        Product not found
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

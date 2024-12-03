@@ -5,7 +5,7 @@
         <!-- main-content-wrap -->
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Add Product</h3>
+                <h3>Edit Product</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="{{ route('admin.index') }}">
@@ -169,7 +169,7 @@
                         <fieldset class="name">
                             <div class="body-title mb-10">Regular Price <span class="tf-color-1">*</span></div>
                             <input class="mb-10" type="text" placeholder="Enter regular price" name="regular_price"
-                                tabindex="0" value="{{ $product->regular_price }}0" aria-required="true"
+                                tabindex="0" value="{{ number_format($product->regular_price, 3, '.', '.') }}" aria-required="true"
                                 required="">
                         </fieldset>
                         @error('regular_price')

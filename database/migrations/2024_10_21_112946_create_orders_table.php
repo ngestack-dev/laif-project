@@ -20,16 +20,12 @@ return new class extends Migration
             $table->decimal('total');
             $table->string('name');
             $table->string('phone');
-            // $table->string('locality');
             $table->text('address');
             $table->string('city');
             $table->string('province');
-            // $table->string('country');
-            // $table->string('landamark');
             $table->string('zip_code');
             $table->string('type')->default('home');
             $table->enum('status', ['ordered', 'delivered', 'canceled'])->default('ordered');
-            // $table->enum('status', ['pending', 'ordered', 'delivered', 'canceled'])->default('pending');
             $table->boolean('is_shipping_different')->default(false);
             $table->date('delivered_date')->nullable();
             $table->date('canceled_date')->nullable();

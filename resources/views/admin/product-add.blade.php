@@ -89,8 +89,8 @@
 
                     <fieldset class="shortdescription">
                         <div class="body-title mb-10">Short Description <span class="tf-color-1">*</span></div>
-                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" tabindex="0"
-                            value="" aria-required="true" required="">{{ old('short_description') }}</textarea>
+                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" tabindex="0" value=""
+                            aria-required="true" required="">{{ old('short_description') }}</textarea>
                         <div class="text-tiny">Do not exceed 100 characters when entering the
                             product name.</div>
                     </fieldset>
@@ -101,8 +101,8 @@
                     <fieldset class="description">
                         <div class="body-title mb-10">Description <span class="tf-color-1">*</span>
                         </div>
-                        <textarea class="mb-10" name="description" placeholder="Description" tabindex="0" aria-required="true"
-                            value="" required="">{{ old('description') }}</textarea>
+                        <textarea class="mb-10" name="description" placeholder="Description" tabindex="0" aria-required="true" value=""
+                            required="">{{ old('description') }}</textarea>
                         <div class="text-tiny">Do not exceed 100 characters when entering the
                             product name.</div>
                     </fieldset>
@@ -112,12 +112,11 @@
                 </div>
                 <div class="wg-box">
                     <fieldset>
-                        <div class="body-title">Upload images <span class="tf-color-1">*</span>
+                        <div class="body-title">Upload Images <span class="tf-color-1">*</span>
                         </div>
                         <div class="upload-image flex-grow">
-                            <div class="item" id="imgpreview" style="display:none">
-                                <img src="../../../localhost_8000/images/upload/upload-1.png" class="effect8"
-                                    alt="">
+                            <div id="imgpreview" class="item" style="display:none;">
+                                <img src="" alt="Preview" class="effect8">
                             </div>
                             <div id="upload-file" class="item up-load">
                                 <label class="uploadfile" for="myFile">
@@ -125,7 +124,7 @@
                                         <i class="icon-upload-cloud"></i>
                                     </span>
                                     <span class="body-text">Drop your images here or select <span class="tf-color">click
-                                            to browse</span></span>
+                                            to browse </span>(*max 2mb)</span>
                                     <input type="file" id="myFile" name="image" accept=".jpg, .jpeg, .png">
                                 </label>
                             </div>
@@ -138,16 +137,13 @@
                     <fieldset>
                         <div class="body-title mb-10">Upload Gallery Images</div>
                         <div class="upload-image mb-16">
-                            <!-- <div class="item">
-                                                                <img src="images/upload/upload-1.png" alt="">
-                                                            </div>                                                 -->
                             <div id="galUpload" class="item up-load">
                                 <label class="uploadfile" for="gFile">
                                     <span class="icon">
                                         <i class="icon-upload-cloud"></i>
                                     </span>
-                                    <span class="text-tiny">Drop your images here or select <span class="tf-color">click
-                                            to browse</span></span>
+                                    <span class="body-text">Drop your images here or select <span class="tf-color">click
+                                            to browse</span>(*max 2mb)</span>
                                     <input type="file" id="gFile" name="images[]" accept=".jpg, .jpeg, .png"
                                         multiple="">
                                 </label>
@@ -161,16 +157,18 @@
                     <div class="cols gap22">
                         <fieldset class="name">
                             <div class="body-title mb-10">Regular Price <span class="tf-color-1">*</span></div>
-                            <input class="mb-10" type="text" placeholder="Enter regular price without .000" name="regular_price"
-                                tabindex="0" value="{{ old('regular_price') }}" aria-required="true" required="">
+                            <input class="mb-10" type="text" placeholder="Enter regular price without .000"
+                                name="regular_price" tabindex="0" value="{{ old('regular_price') }}"
+                                aria-required="true" required="">
                         </fieldset>
                         @error('regular_price')
                             <span class="alert alert-danger text-center">{{ $message }}</span>
                         @enderror
                         <fieldset class="name">
                             <div class="body-title mb-10">Sale Price </div>
-                            <input class="mb-10" type="text" placeholder="Enter sale price without .000" name="sale_price"
-                                tabindex="0" value=" {{ old('sale_price') }}" aria-required="true" required="">
+                            <input class="mb-10" type="text" placeholder="Enter sale price without .000"
+                                name="sale_price" tabindex="0" value=" {{ old('sale_price') }}" aria-required="true"
+                                required="">
                         </fieldset>
                         @error('sale_price')
                             <span class="alert alert-danger text-center">{{ $message }}</span>

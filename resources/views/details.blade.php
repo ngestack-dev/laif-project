@@ -1,6 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        .stars svg {
+            width: 20px;
+            height: 20px;
+            fill: #f39c12;
+            /* Warna bintang kosong */
+            margin-right: 2px;
+        }
+
+        .filled-star {
+            fill: #f39c12;
+            /* Warna bintang terhighlight (misalnya kuning) */
+        }
+
+        .half-star {
+            fill: linear-gradient(to right, #f39c12 50%, #ddd 50%);
+            /* Setengah bintang dengan warna kuning dan abu-abu */
+        }
+
+        .empty-star {
+            fill: #ddd;
+            /* Warna bintang kosong */
+        }
+    </style>
+
     <main class="pt-90">
         <div class="mb-md-1 pb-md-3"></div>
         <section class="product-single container">
@@ -90,7 +115,7 @@
                         </div><!-- /.shop-acs -->
                     </div>
                     <h1 class="product-single__name">{{ $product->name }}</h1>
-                    <div class="product-single__rating">
+                    {{-- <div class="product-single__rating">
                         <div class="reviews-group d-flex">
                             <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
                                 <use href="#icon_star" />
@@ -109,13 +134,13 @@
                             </svg>
                         </div>
                         <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
-                    </div>
+                    </div> --}}
                     <div class="product-single__price">
                         <span class="current-price">
                             @if ($product->sale_price)
-                                <s>Rp{{ $product->regular_price }}0 </s> Rp{{ $product->sale_price }}0
+                                <s>Rp{{ number_format($product->regular_price, 3, ',', '.') }}</s>Rp{{ number_format($product->sale_price, 3, '.', '.') }}
                             @else
-                                Rp{{ $product->regular_price }}0
+                                Rp{{ number_format($product->regular_price, 3, '.', '.') }}
                             @endif
                         </span>
                     </div>
@@ -149,15 +174,8 @@
                         @endguest
                     @endif
                     <div class="product-single__addtolinks">
-                        @guest
 
-                        @else
-                            <a href="#" class="menu-link menu-link_us-s add-to-wishlist"><svg width="16"
-                                    height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <use href="#icon_heart" />
-                                </svg><span>Add to Wishlist</span></a>
-                        @endguest
-                        <share-button class="share-button">
+                        {{-- <share-button class="share-button">
                             <button
                                 class="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center">
                                 <svg width="16" height="19" viewBox="0 0 16 19" fill="none"
@@ -188,7 +206,7 @@
                                     </button>
                                 </div>
                             </details>
-                        </share-button>
+                        </share-button> --}}
                         <script src="js/details-disclosure.html" defer="defer"></script>
                         <script src="js/share.html" defer="defer"></script>
                     </div>
@@ -201,10 +219,10 @@
                             <label>Categories:</label>
                             <span>Casual & Urban Wear, Jackets, Men</span>
                         </div> --}}
-                        <div class="meta-item">
+                        {{-- <div class="meta-item">
                             <label>Tags:</label>
                             <span>biker, black, bomber, leather</span>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -215,15 +233,15 @@
                             href="#tab-description" role="tab" aria-controls="tab-description"
                             aria-selected="true">Description</a>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    {{-- <li class="nav-item" role="presentation">
                         <a class="nav-link nav-link_underscore" id="tab-additional-info-tab" data-bs-toggle="tab"
                             href="#tab-additional-info" role="tab" aria-controls="tab-additional-info"
                             aria-selected="false">Additional Information</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link nav-link_underscore" id="tab-reviews-tab" data-bs-toggle="tab"
-                            href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews
-                            (2)</a>
+                            href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Ratings
+                            ({{ $totalRatings }})</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -233,7 +251,7 @@
                             {{ $product->description }}
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="tab-additional-info" role="tabpanel"
+                    {{-- <div class="tab-pane fade" id="tab-additional-info" role="tabpanel"
                         aria-labelledby="tab-additional-info-tab">
                         <div class="product-single__addtional-info">
                             <div class="item">
@@ -257,88 +275,52 @@
                                 <span>Relaxed fit shirt-style dress with a rugged</span>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="tab-pane fade" id="tab-reviews" role="tabpanel" aria-labelledby="tab-reviews-tab">
                         <h2 class="product-single__reviews-title">Reviews</h2>
                         <div class="product-single__reviews-list">
                             <div class="product-single__reviews-item">
-                                <div class="customer-avatar">
-                                    <img loading="lazy" src="assets/images/avatar.jpg" alt="" />
-                                </div>
-                                <div class="customer-review">
-                                    <div class="customer-name">
-                                        <h6>Janice Miller</h6>
-                                        <div class="reviews-group d-flex">
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
+                                <div class="customer-review row">
+                                    @forelse ($ratings as $rating)
+                                        <div class="customer-name col">
+                                            <h5 class="mr-3">{{ $rating->user->name }}</h5>
                                         </div>
-                                    </div>
-                                    <div class="review-date">April 06, 2023</div>
-                                    <div class="review-text">
+                                        <!-- Menambahkan margin kanan untuk jarak -->
+                                        <div class="stars col mb-3">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <!-- Bintang penuh -->
+                                                @if ($rating->stars >= $i)
+                                                    <svg class="filled-star" viewBox="0 0 9 9"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <use href="#icon_star" />
+                                                    </svg> <!-- Bintang terhighlight -->
+                                                    <!-- Bintang setengah -->
+                                                    {{-- @elseif ($rating->stars >= $i - 0.5 && $rating->stars < $i)
+                                                        <svg class="half-star" viewBox="0 0 9 9"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <use href="#icon_star_half" />
+                                                        </svg> <!-- Bintang setengah terhighlight -->
+                                                        <!-- Bintang kosong -->
+                                                    @else
+                                                        <svg class="empty-star" viewBox="0 0 9 9"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <use href="#icon_star_empty" />
+                                                        </svg> <!-- Bintang kosong --> --}}
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <div class="review-date">{{ $rating->created_at->format('M d, Y') }}</div>
+                                        {{-- <div class="review-text">
                                         <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
                                             minus id quod
                                             maxime placeat facere possimus, omnis voluptas assumenda est…</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product-single__reviews-item">
-                                <div class="customer-avatar">
-                                    <img loading="lazy" src="assets/images/avatar.jpg" alt="" />
-                                </div>
-                                <div class="customer-review">
-                                    <div class="customer-name">
-                                        <h6>Benjam Porter</h6>
-                                        <div class="reviews-group d-flex">
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="review-date">April 06, 2023</div>
-                                    <div class="review-text">
-                                        <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                            minus id quod
-                                            maxime placeat facere possimus, omnis voluptas assumenda est…</p>
-                                    </div>
+                                    </div> --}}
+                                    @empty
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
-                        <div class="product-single__review-form">
+                        {{-- <div class="product-single__review-form">
                             <form name="customer-review-form">
                                 <h5>Be the first to review “Message Cotton T-Shirt”</h5>
                                 <p>Your email address will not be published. Required fields are marked *</p>
@@ -396,7 +378,7 @@
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </form>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -479,9 +461,9 @@
                         <div class="product-card__price d-flex">
                             <span class="money price">
                                 @if ($product->sale_price)
-                                    <s>Rp{{ $product->regular_price }} </s> Rp{{ $rproduct->sale_price }}
+                                    <s>Rp{{ number_format($product->regular_price, 3, ',', '.') }}</s>Rp{{ number_format($product->sale_price, 3, '.', '.') }}
                                 @else
-                                    Rp{{ $product->regular_price }}
+                                    Rp{{ number_format($product->regular_price, 3, '.', '.') }}
                                 @endif
                             </span>
                         </div>

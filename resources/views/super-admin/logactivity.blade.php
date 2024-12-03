@@ -23,18 +23,16 @@
             <div class="wg-box">
                 <div class="flex items-center justify-between gap10 flex-wrap">
                     <div class="wg-filter flex-grow">
-                        {{-- <form class="form-search">
+                        <form class="form-search" action="{{ route('admin.search.admin-log') }}" method="GET">
                             <fieldset class="name">
-                                <input type="text" placeholder="Search here..." class="" name="name"
+                                <input type="text" placeholder="Search here..." class="" name="query"
                                     tabindex="2" value="" aria-required="true" required="">
                             </fieldset>
                             <div class="button-submit">
                                 <button class="" type="submit"><i class="icon-search"></i></button>
                             </div>
-                        </form> --}}
+                        </form>
                     </div>
-                    {{-- <a class="tf-button style-1 w208" href="{{ route('admin.admins.add') }}"><i class="icon-plus"></i>Add
-                        new</a> --}}
                 </div>
                 @if (session('status'))
                     <div class="alert alert-success fs-3">
@@ -48,41 +46,23 @@
                                 <th style="width: 5%;">#</th>
                                 <th style="width: 20%;">Admin Name</th>
                                 <th style="width: 40%;">Activity</th>
-                                <th>Date</th>
+                                <th>Timestamp</th>
                                 {{-- <th style="width: 7%;">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($logs as $log)
+                            @forelse ($logs as $log)
                                 <tr>
                                     <td>{{ $log->id }}</td>
                                     <td>{{ $log->admin->name }}</td>
                                     <td>{{ $log->activity }}</td>
                                     <td>{{ $log->created_at->format('d M Y H:i') }}</td>
-                                    {{-- <td>
-                                        <div class="list-icon-function"> --}}
-                                            {{-- <a href="{{ route('', ['id' => $admin->id]) }}" target="_blank">
-                                                <div class="item eye">
-                                                    <i class="icon-eye"></i>
-                                                </div>
-                                            </a> --}}
-                                            {{-- <a href="{{ route('admin.admins.edit', ['id' => $admin->id]) }}">
-                                                <div class="item edit">
-                                                    <i class="icon-edit-3"></i>
-                                                </div>
-                                            </a>
-                                            <form action="{{ route('admin.admins.delete', ['id' => $admin->id]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div class="delete item text-danger">
-                                                    <i class="icon-trash-2"></i>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </td> --}}
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Log not found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                     {{ $logs->links() }}

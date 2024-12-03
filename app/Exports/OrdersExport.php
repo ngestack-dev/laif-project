@@ -31,7 +31,9 @@ class OrdersExport implements FromCollection, WithHeadings
             'type',
             'status',
             'is_shipping_different',
+            'created_at',
             'delivered_date',
+            'received_date',
             'canceled_date'
         )->get();
     }
@@ -59,7 +61,9 @@ class OrdersExport implements FromCollection, WithHeadings
             'Type',
             'Status',
             'Is Shipping Different',
+            'Created At',
             'Delivered Date',
+            'Received Date',
             'Canceled Date',
         ];
     }

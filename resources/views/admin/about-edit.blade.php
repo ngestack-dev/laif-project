@@ -28,21 +28,26 @@
                     </li>
                 </ul>
             </div>
+            @if (session('success'))
+                <div class="alert alert-success fs-3">
+                    {{ session('success') }}
+                </div>
+            @endif
             <!-- form-add-product -->
             <form action="{{ route('about.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <div class="form-group mb-4">
+                <div class="form-group mb-20 fs-3">
                     <label for="address">Address</label>
                     <textarea class="form-control fs-3" id="address" name="address" rows="3">{{ old('address', $about->address) }}</textarea>
                 </div>
-                <div class="form-group mb-4">
-                    <label for="our_story">Our Story</label>
-                    <textarea class="form-control fs-4" id="our_story" name="story" rows="5">{{ old('our_story', $about->story) }}</textarea>
+                <div class="form-group mb-20 fs-3">
+                    <label for="story">Our Story</label>
+                    <textarea class="form-control fs-4" id="story" name="story" rows="5">{{ old('story', $about->story) }}</textarea>
                 </div>
 
-                <div class="row">
+                <div class="row fs-3 mb-20">
                     <div class="col-md-6">
                         <div class="form-group mb-4">
                             <label for="vision">Our Vision</label>
@@ -57,15 +62,37 @@
                     </div>
                 </div>
 
-                <div class="form-group mb-4">
-                    <label for="laif_essential">Laif Essential</label>
-                    <textarea class="form-control fs-4" id="laif_essential" name="about_laif" rows="4">{{ old('laif_essential', $about->about_laif) }}</textarea>
+                <div class="form-group mb-20 fs-3">
+                    <label for="about_laif">Laif Essential</label>
+                    <textarea class="form-control fs-4" id="about_laif" name="about_laif" rows="4">{{ old('about_laif', $about->about_laif) }}</textarea>
+                </div>
+
+                <div class="row fs-3 mb-20">
+                    <div class="col-md-4">
+                        <div class="form-group mb-4">
+                            <label for="email_laif">Email</label>
+                            <textarea class="form-control fs-4" id="email_laif" name="email_laif" rows="3">{{ old('email_laif', $about->email_laif) }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-4">
+                            <label for="phone_laif">Phone</label>
+                            <textarea class="form-control fs-4" id="phone_laif" name="phone_laif" rows="3">{{ old('phone_laif', $about->phone_laif) }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-4">
+                            <label for="instagram">Instagram</label>
+                            <textarea class="form-control fs-4" id="instagram" name="instagram" rows="3">{{ old('instagram', $about->instagram) }}</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="image">Change Image (max 2mb)</label>
                     <input type="file" class="form-control" id="image" name="image">
-                    <small>Current image: <img src="{{ asset('assets/images/about/' . $about->image) }}" width="100">
+                    <small class="fs-5">Current image: <img src="{{ asset('assets/images/about/' . $about->image) }}"
+                            width="100">
                     </small>
                     @error('image')
                         <span class="alert alert-danger text-center">{{ $message }}</span>

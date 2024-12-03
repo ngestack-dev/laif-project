@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrdersExport;
+use App\Exports\offlineOrdersExport;
 use App\Models\About;
 use App\Models\ActivityLog;
+use App\Models\OfflineOrder;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Laravel\Facades\Image;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -36,6 +40,12 @@ class AdminController extends Controller
 
         if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
             $request->session()->regenerate();
+
+            ActivityLog::create([
+                'admin_id' => Auth('admin')->id(),
+                'activity' => 'logged in',
+            ]);
+
             return redirect()->route('admin.index');
         }
 
@@ -46,6 +56,10 @@ class AdminController extends Controller
 
     public function AdminLogout(Request $request)
     {
+        ActivityLog::create([
+            'admin_id' => Auth('admin')->id(),
+            'activity' => 'logged out',
+        ]);
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -54,14 +68,19 @@ class AdminController extends Controller
 
     public function index()
     {
-        // $user = Auth::guard('admin')->user();
+        $ordersCount = Order::where('status', 'received')->count();
+        $totalOrdersAmount = Order::where('status', 'received')->sum('total');
+        $offlineOrdersCount = OfflineOrder::count();
+        $offlineOrdersAmount = OfflineOrder::sum('total');
+        $recentOrder = Order::latest()->first();
+        $recentOfflineOrder = OfflineOrder::latest()->first();
 
-        return view('admin.index');
+        return view('admin.index', compact('ordersCount', 'totalOrdersAmount', 'offlineOrdersCount', 'offlineOrdersAmount', 'recentOrder', 'recentOfflineOrder'));
     }
 
     public function products()
     {
-        $products = Product::orderBy('created_at', 'DESC')->paginate(10);
+        $products = Product::orderBy('created_at', 'ASC')->paginate(10);
         return view('admin.products', compact('products'));
     }
 
@@ -289,14 +308,14 @@ class AdminController extends Controller
     public function orders()
     {
         $orders = Order::orderBy('created_at', 'DESC')->paginate(12);
-        return view('admin.orders', compact('orders')); 
+        return view('admin.orders', compact('orders'));
     }
 
     public function order_details($order_id)
     {
         $order = Order::find($order_id);
         $orderItems = OrderItem::where('order_id', $order_id)->orderBy('id')->paginate(12);
-        $transaction = Transaction::where('order_id', $order_id)->first(); 
+        $transaction = Transaction::where('order_id', $order_id)->first();
         return view('admin.order-details', compact('order', 'orderItems', 'transaction'));
     }
 
@@ -304,29 +323,38 @@ class AdminController extends Controller
     {
         $order = Order::find($request->order_id);
         $order->status = $request->order_status;
-        if ($request->order_status == 'delivered') 
-        {
+        if ($request->order_status == 'delivered') {
             $order->delivered_date = Carbon::now();
-        }
-        else if ($request->order_status == 'canceled') 
-        {
+        } else if ($request->order_status == 'canceled') {
             $order->canceled_date = Carbon::now();
         }
         $order->save();
 
         ActivityLog::create([
             'admin_id' => auth()->id(),
-            'activity' => 'Updated a order: ' . $order->name,
+            'activity' => 'Updated an order: ' . $order->id,
         ]);
 
-        if ($request->order_status == 'delivered')
-        {
+        if ($request->order_status == 'delivered') {
             $transaction = Transaction::where('order_id', $request->order_id)->first();
             $transaction->status = 'success';
             $transaction->save();
         }
 
         return back()->with('status', 'Order status has been updated successfully');
+    }
+
+    public function exportOrdersXlsx()
+    {
+        return Excel::download(new OrdersExport, 'orders.xlsx');
+    }
+
+    /**
+     * Export data to CSV (.csv).
+     */
+    public function exportOrdersCsv()
+    {
+        return Excel::download(new OrdersExport, 'orders.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function edit_about()
@@ -345,6 +373,9 @@ class AdminController extends Controller
             'vision' => 'required|string',
             'mission' => 'required|string',
             'about_laif' => 'required|string',
+            'email_laif' => 'required|string',
+            'phone_laif' => 'required|string',
+            'instagram' => 'required|string',
             'image' => 'image|mimes:jpeg,png,jpg|max:2048'
         ], [
             'image.mimes' => 'Hanya file dengan ekstensi jpeg, png, dan jpg yang diizinkan.',
@@ -380,5 +411,167 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('about.edit')->with('success', 'About updated successfully.');
+    }
+
+    public function offlineOrders()
+    {
+        $orders = OfflineOrder::when(Auth::id() != 1, function ($query) {
+            return $query->where('admin_id', Auth::id());
+        })
+            ->orderBy('created_at', 'DESC')
+            ->paginate(12);
+        return view('admin.offline-orders', compact('orders'));
+    }
+
+    public function addOfflineOrder()
+    {
+        $products = Product::orderBy('created_at', 'DESC')->paginate(12);
+        return view('admin.add-offline-order', compact('products'));
+    }
+
+    public function storeOfflineOrder(Request $request)
+    {
+        $request->validate([
+            'products' => 'required|array',
+            'products.*.id' => 'required|integer|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:0',
+        ]);
+
+        // Filter produk yang kuantitasnya lebih dari 0
+        $filteredProducts = array_filter($request->input('products'), function ($product) {
+            return $product['quantity'] > 0;
+        });
+
+        // Jika tidak ada produk yang valid, kembalikan dengan error
+        if (empty($filteredProducts)) {
+            return redirect()->back()->withErrors(['products' => 'Please add at least one product with a quantity greater than 0.']);
+        }
+
+        // Simpan order ke dalam database
+        $order = new OfflineOrder();
+        $order->admin_id = Auth::id();
+        $order->subtotal = $this->calculateSubtotal($filteredProducts);
+        $order->tax = $this->calculateTax($order->subtotal);
+        $order->total = $order->subtotal + $order->tax;
+        $order->save();
+
+        // Simpan order items ke dalam database
+        foreach ($filteredProducts as $product) {
+            $orderItem = new OrderItem();
+            $orderItem->offline_order_id = $order->id;
+            $orderItem->product_id = $product['id'];
+            $orderItem->quantity = $product['quantity'];
+            $orderItem->price = $product['price'];
+            $orderItem->save();
+        }
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Create an offline order with total: Rp' . number_format($order->total, 3, '.', '.'),
+        ]);
+
+        // Redirect atau memberi response setelah berhasil
+        return redirect()->route('admin.offline.orders')->with('success', 'Offline order created successfully.');
+    }
+
+
+    private function calculateSubtotal($products)
+    {
+        $subtotal = 0;
+        foreach ($products as $product) {
+            $subtotal += $this->getProductPrice($product['id']) * $product['quantity'];
+        }
+        return $subtotal;
+    }
+
+    // Fungsi untuk mendapatkan harga produk
+    private function getProductPrice($product_id)
+    {
+        // Mengambil harga produk dari database atau model
+        $product = \App\Models\Product::find($product_id);
+        return $product ? $product->sale_price ?: $product->regular_price : 0;
+    }
+
+    // Fungsi untuk menghitung pajak (contoh sederhana 10%)
+    private function calculateTax($subtotal)
+    {
+        return $subtotal * 0.10; // 10% pajak
+    }
+
+    public function offlineOrderDetails($offline_order_id)
+    {
+        $order = OfflineOrder::find($offline_order_id);
+        $orderItems = OrderItem::where('offline_order_id', $offline_order_id)->orderBy('id')->paginate(12);
+        return view('admin.offline-order-details', compact('order', 'orderItems'));
+    }
+
+    public function exportOfflineOrdersXlsx()
+    {
+        return Excel::download(new OfflineOrdersExport, 'offline-orders.xlsx');
+    }
+
+    public function exportOfflineOrdersCsv()
+    {
+        return Excel::download(new OfflineOrdersExport, 'offline-orders.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function searchProduct(Request $request)
+    {
+        // Ambil query dari form pencarian
+        $query = $request->input('query');
+
+        // Filter data berdasarkan query jika ada
+        $products = Product::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('SKU', 'like', '%' . $query . '%')
+                    ->orWhere('regular_price', 'like', '%' . $query . '%')
+                    ->orWhere('stock_status', 'like', '%' . $query . '%');
+            })
+            ->paginate(10); // Pagination, Anda dapat menyesuaikan jumlahnya
+
+        // Kembalikan ke view dengan data admins
+        return view('admin.products', compact('products'));
+    }
+
+
+    public function searchOrders(Request $request)
+    {
+        // Ambil query dari form pencarian
+        $query = $request->input('query');
+
+        // Filter data berdasarkan query jika ada
+        $orders = Order::query()
+            ->with('user')
+            ->when($query, function ($q) use ($query) {
+                $q->whereHas('user', function ($subQuery) use ($query) {
+                    $subQuery->where('name', 'like', '%' . $query . '%'); // Cari berdasarkan nama user
+                })
+                    ->orWhere('id', 'like', '%' . $query . '%')
+                    ->orWhere('status', 'like', '%' . $query . '%')
+                    ->orWhereRaw("DATE_FORMAT(created_at, '%d %b %Y %H:%i') LIKE ?", ['%' . $query . '%']);
+            })
+            ->paginate(10); // Pagination, Anda dapat menyesuaikan jumlahnya
+
+        // Kembalikan ke view dengan data admins
+        return view('admin.orders', compact('orders'));
+    }
+
+    public function searchOfflineOrders(Request $request)
+    {
+        // Ambil query dari form pencarian
+        $query = $request->input('query');
+
+        // Filter data berdasarkan query jika ada
+        $orders = OfflineOrder::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('id', 'like', '%' . $query . '%')
+                    ->orWhere('total', 'like', '%' . $query . '%')
+                    ->orWhereRaw("DATE_FORMAT(created_at, '%d %b %Y %H:%i') LIKE ?", ['%' . $query . '%']);
+            })
+            ->paginate(10); // Pagination, Anda dapat menyesuaikan jumlahnya
+
+        // Kembalikan ke view dengan data admins
+        return view('admin.offline-orders', compact('orders'));
     }
 }

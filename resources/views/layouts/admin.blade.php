@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laif') }}</title>
+    <title>{{ config('app.name', 'Laif (Admin Page)') }}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="laif" />
     <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.min.css') }}">
@@ -75,11 +75,13 @@
                                         <div class="text">Products</div>
                                     </a>
                                     <ul class="sub-menu">
+                                        @role('super-admin')
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.product.add') }}" class="">
                                                 <div class="text">Add Product</div>
                                             </a>
                                         </li>
+                                        @endrole
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.products') }}" class="">
                                                 <div class="text">Products</div>
@@ -127,17 +129,19 @@
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-file-plus"></i></div>
-                                        <div class="text">Order</div>
+                                        <div class="text">Orders</div>
                                     </a>
                                     <ul class="sub-menu">
+                                        @role('super-admin')
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.orders') }}" class="">
                                                 <div class="text">Orders</div>
                                             </a>
                                         </li>
+                                        @endrole
                                         <li class="sub-menu-item">
-                                            <a href="order-tracking.html" class="">
-                                                <div class="text">Order tracking</div>
+                                            <a href="{{ route('admin.offline.orders') }}" class="">
+                                                <div class="text">Offline Orders</div>
                                             </a>
                                         </li>
                                     </ul>
@@ -161,15 +165,16 @@
                                         <div class="text">Users</div>
                                     </a>
                                 </li> --}}
-
-                                <li class="menu-item">
-                                    <a href="{{ route('about.edit') }}" class="">
-                                        <div class="icon"><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 20px;"></i></div>
-                                        <div class="text">About</div>
-                                    </a>
-                                </li>
-
                                 @role('super-admin')
+                                    <li class="menu-item">
+                                        <a href="{{ route('about.edit') }}" class="">
+                                            <div class="icon"><i class="fa fa-info-circle" aria-hidden="true"
+                                                    style="font-size: 20px;"></i></div>
+                                            <div class="text">About</div>
+                                        </a>
+                                    </li>
+
+
                                     <li class="menu-item">
                                         <a href="{{ route('admin.admins') }}" class="">
                                             <div class="icon"><i class="icon-user"></i></div>
@@ -182,7 +187,8 @@
                                 @role('super-admin')
                                     <li class="menu-item">
                                         <a href="{{ route('admin.activity-logs') }}" class="">
-                                            <div class="icon"><i class="fa fa-address-book-o" aria-hidden="true"></i></div>
+                                            <div class="icon"><i class="fa fa-address-book-o" aria-hidden="true"></i>
+                                            </div>
                                             <div class="text">Admin Log</div>
                                         </a>
                                     </li>
@@ -219,7 +225,7 @@
                                 </div>
 
 
-                                <form class="form-search flex-grow">
+                                {{-- <form class="form-search flex-grow">
                                     <fieldset class="name">
                                         <input type="text" placeholder="Search here..." class="show-search"
                                             name="name" tabindex="2" value="" aria-required="true"
@@ -346,12 +352,12 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </form>
+                                </form> --}}
 
                             </div>
                             <div class="header-grid">
 
-                                <div class="popup-wrap message type-header">
+                                {{-- <div class="popup-wrap message type-header">
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button"
                                             id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -417,26 +423,26 @@
                                             <li><a href="#" class="tf-button w-full">View all</a></li>
                                         </ul>
                                     </div>
-                                </div>
+                                </div> --}}
 
 
 
 
                                 <div class="popup-wrap user type-header">
                                     <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{-- <button class="btn btn-secondary dropdown-toggle" type="button"    
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false"> --}}
                                             <span class="header-user wg-user">
                                                 <span class="">
-                                                    <img src="{{ asset('images/avatar/pm.png') }}" alt=""
-                                                        width="40" height="40">
+                                                    {{-- <img src="{{ asset('images/avatar/pm.png') }}" alt=""
+                                                        width="40" height="40"> --}}
                                                 </span>
                                                 <span class="flex flex-column">
                                                     <span class="body-title mb-2">{{ Auth::user()->name }}</span>
                                                     <span class="text-tiny">{{ Auth::user()->position }}</span>
                                                 </span>
                                             </span>
-                                        </button>
+                                        {{-- </button> --}}
                                         <ul class="dropdown-menu dropdown-menu-end has-content"
                                             aria-labelledby="dropdownMenuButton3">
                                             <li>
@@ -507,6 +513,26 @@
     <script src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/apexcharts/apexcharts.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    {{-- <script>
+        $(function() {
+            $("#search-input").on("keyup", function(){
+                var searchQuery = $(this).val();
+                if (searchQuery.length > 2) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('admin.search.product') }}",
+                        data: {query: searchQuery},
+                        success: function(data) {
+                            $("#box-content-search").html('');
+                            $.each(data, function(index, item) {
+                                var url = "{{ route('admin.product.view', ['id' => 'id_pls']) }}".replace('id_pls', item.id);
+                            })
+                        }
+                    })
+                } 
+            })
+        })
+    </script> --}}
     <script>
         (function($) {
 

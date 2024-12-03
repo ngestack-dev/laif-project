@@ -18,7 +18,9 @@ return new class extends Migration
             $table->text('vision');
             $table->text('mission');
             $table->text('about_laif');
-            $table->string('image')->nullable();
+            $table->string('laif_email');
+            $table->string('laif_phone');
+            $table->string('about_image')->nullable();
             $table->timestamps();
         });
     }
