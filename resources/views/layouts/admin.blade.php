@@ -75,16 +75,14 @@
                                         <div class="text">Products</div>
                                     </a>
                                     <ul class="sub-menu">
-                                        @role('super-admin')
-                                        <li class="sub-menu-item">
-                                            <a href="{{ route('admin.product.add') }}" class="">
-                                                <div class="text">Add Product</div>
-                                            </a>
-                                        </li>
-                                        @endrole
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.products') }}" class="">
                                                 <div class="text">Products</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.offline.products') }}" class="">
+                                                <div class="text">Offline Products</div>
                                             </a>
                                         </li>
                                     </ul>
@@ -513,6 +511,7 @@
     <script src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/apexcharts/apexcharts.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {{-- <script>
         $(function() {
             $("#search-input").on("keyup", function(){

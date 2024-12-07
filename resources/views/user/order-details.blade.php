@@ -118,7 +118,6 @@
             /* Pastikan tombol hanya selebar teks */
         }
     </style>
-
     <main class="pt-90" style="padding-top: 0px;">
         <div class="mb-4 pb-4"></div>
         <section class="my-account container">
@@ -161,19 +160,23 @@
                                 </div>
                             </div>
                         </div>
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         @if ($order->status == 'received')
                             {{-- Variabel flag untuk cek jika ada produk yang perlu dirating --}}
-                            <h5 class="text-center mt-3">Rate This Product</h5>
-
+                            {{-- <h5 class="text-center mt-3">Rate This Product</h5> --}}
                             @php
-                                $isRatingAvailable = false;
+                                $isRatingAvailable = true;
                             @endphp
                             @if ($isRatingAvailable)
                                 @foreach ($orderItems as $item)
                                     @if (!in_array($item->product_id, $ratedProducts))
                                         {{-- Set flag menjadi true jika produk ini belum dirating --}}
                                         @php
-                                            $isRatingAvailable = true;
+                                            $isRatingAvailable = false;
                                         @endphp
                                         <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                                         <div class="pname">
@@ -200,7 +203,7 @@
                                 @endforeach
 
                                 {{-- Tampilkan tombol submit jika ada produk yang perlu dirating --}}
-                                @if ($isRatingAvailable)
+                                @if (!$isRatingAvailable)
                                     <button id="submit-rating" class="btn btn-sm btn-warning mt-2">Submit Rating</button>
                                 @endif
                             @endif
@@ -220,11 +223,11 @@
                                 </tr>
                                 <tr>
                                     <th>Order Date</th>
-                                    <td>{{ $order->created_at }}</td>
+                                    <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                                     <th>Delivered Date</th>
-                                    <td>{{ $order->delivered_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($order->delivered_date)->format('d M Y H:i') }}</td>
                                     <th>Canceled Date</th>
-                                    <td>{{ $order->canceled_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($order->delivered_date)->format('d M Y H:i') }}</td>
                                 </tr>
                                 <tr>
                                     <th>Order Status</th>
@@ -240,7 +243,7 @@
                                         @endif
                                     </td>
                                     <th>Received Date</th>
-                                    <td>{{ $order->received_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($order->delivered_date)->format('d M Y H:i') }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -279,7 +282,7 @@
                                                         target="_blank" class="body-title-2">{{ $item->product->name }}</a>
                                                 </div>
                                             </td>
-                                            <td class="text-center">${{ $item->price }}</td>
+                                            <td class="text-center">Rp{{ number_format($item->price, 3, '.', '.') }}</td>
                                             <td class="text-center">{{ $item->quantity }}</td>
                                             <td class="text-center">{{ $item->product->SKU }}</td>
                                             {{-- <td class="text-center">Category1</td> --}}
@@ -327,15 +330,21 @@
                             <tbody>
                                 <tr>
                                     <th>Subtotal</th>
-                                    <td>{{ $order->subtotal }}</td>
+                                    <td>Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
                                     <th>Tax</th>
-                                    <td>{{ $order->tax }}</td>
+                                    <td>Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
                                     <th>Discount</th>
-                                    <td>{{ $order->discount }}</td>
+                                    <td>
+                                        @if ($order->discount === '0.00')
+                                            -
+                                        @else
+                                            Rp{{ number_format($order->discount, 3, '.', '.') }}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Total</th>
-                                    <td>{{ $order->total }}</td>
+                                    <td>Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                                     <th>Payment Mode</th>
                                     <td class="text-uppercase">{{ $transaction->mode }}</td>
                                     <th>Status</th>
@@ -552,13 +561,18 @@
                             })
                         })
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
+                            if (!response.ok) throw new Error('Network error');
                             return response.json();
                         })
-                        .then(data => alert(data.message))
-                        .catch(error => console.error(error));
+                        .then(data => {
+                            // Tampilkan pesan sukses
+                            alert(data.message);
+
+                            // Redirect ke halaman sebelumnya atau halaman tertentu
+                            window.location.href = window.location
+                                .href; // Redirect ke URL yang diberikan
+                        })
+                        .catch(error => console.error('Error:', error));
                 } else {
                     alert('Please select ratings for the products.');
                 }

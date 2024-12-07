@@ -7,6 +7,7 @@ use App\Exports\offlineOrdersExport;
 use App\Models\About;
 use App\Models\ActivityLog;
 use App\Models\OfflineOrder;
+use App\Models\OfflineProduct;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -324,6 +325,11 @@ class AdminController extends Controller
         $order = Order::find($request->order_id);
         $order->status = $request->order_status;
         if ($request->order_status == 'delivered') {
+            $orderItems = OrderItem::where('order_id', $request->order_id)->get();
+            foreach ($orderItems as $orderItem) {
+                // Kurangi quantity produk sesuai quantity di OrderItem
+                Product::where('id', $orderItem->product_id)->decrement('quantity', $orderItem->quantity);
+            }
             $order->delivered_date = Carbon::now();
         } else if ($request->order_status == 'canceled') {
             $order->canceled_date = Carbon::now();
@@ -382,6 +388,8 @@ class AdminController extends Controller
             'image.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
+
+
         // Mengambil data about yang pertama
         $about = About::first();
 
@@ -426,7 +434,8 @@ class AdminController extends Controller
     public function addOfflineOrder()
     {
         $products = Product::orderBy('created_at', 'DESC')->paginate(12);
-        return view('admin.add-offline-order', compact('products'));
+        $oproducts = OfflineProduct::where('admin_id', Auth::id())->pluck('quantity', 'product_id');
+        return view('admin.add-offline-order', compact('products', 'oproducts'));
     }
 
     public function storeOfflineOrder(Request $request)
@@ -457,11 +466,18 @@ class AdminController extends Controller
 
         // Simpan order items ke dalam database
         foreach ($filteredProducts as $product) {
+            // Buat instance OrderItem baru untuk setiap produk
             $orderItem = new OrderItem();
             $orderItem->offline_order_id = $order->id;
             $orderItem->product_id = $product['id'];
             $orderItem->quantity = $product['quantity'];
             $orderItem->price = $product['price'];
+
+            // Kurangi quantity produk di OfflineProduct
+            OfflineProduct::where('product_id', $product['id'])
+                ->decrement('quantity', $product['quantity']);
+
+            // Simpan OrderItem setelah melakukan decrement
             $orderItem->save();
         }
 
@@ -573,5 +589,45 @@ class AdminController extends Controller
 
         // Kembalikan ke view dengan data admins
         return view('admin.offline-orders', compact('orders'));
+    }
+
+    public function offlineProducts()
+    {
+        $products = Product::all();
+        $oproducts = OfflineProduct::where('admin_id', Auth::id())->pluck('quantity', 'product_id');
+
+        return view('admin.offline-products', compact('products', 'oproducts'));
+    }
+
+    public function addOfflineProduct()
+    {
+        $products = Product::orderBy('created_at', 'DESC')->paginate(12);
+        $oproducts = OfflineProduct::where('admin_id', Auth::id())->pluck('quantity', 'product_id');
+        return view('admin.edit-offline-product', compact('products', 'oproducts'));
+    }
+
+    public function storeOfflineProduct(Request $request)
+    {
+        $validatedData = $request->validate([
+            'products' => 'required|array',
+            'products.*.id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:0',
+        ]);
+
+        foreach ($validatedData['products'] as $productData) {
+            if ($productData['quantity'] > 0) {
+                OfflineProduct::updateOrCreate(
+                    [
+                        'product_id' => $productData['id'],
+                        'admin_id' => Auth::id(),
+                    ],
+                    [
+                        'quantity' => $productData['quantity'],
+                    ]
+                );
+            }
+        }
+
+        return redirect()->route('admin.offline.products')->with('status', 'Offline product quantities updated successfully!');
     }
 }

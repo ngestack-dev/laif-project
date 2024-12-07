@@ -115,6 +115,31 @@ class UserController extends Controller
         return view('user.edit-address', compact('address'));
     }
 
+    public function updateAddress(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        $address = Address::where('user_id', $user_id)->where('isdefault', true)->first();
+
+        $request->validate([
+            'name' => 'required',
+            'mobile' => 'required',
+            'address' => 'required',
+            'zip_code' => 'required|numeric|digits:5',
+            'city' => 'required',
+            'province' => 'required',
+        ]);
+
+        $address->name = $request->name;
+        $address->mobile = $request->mobile;
+        $address->address = $request->address;
+        $address->zip_code = $request->zip_code;
+        $address->city = $request->city;
+        $address->province = $request->province;
+        $address->save();
+
+        return redirect()->route('user.address')->with('success', 'Address updated successfully!');
+    }
+
     public function orders()
     {
         $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(10);
@@ -152,8 +177,9 @@ class UserController extends Controller
         $order->status = 'received';
         $order->received_date = Carbon::now();
         $order->save();
+        
 
-        return redirect()->back()->with('success', 'Order received successfully');
+        return redirect()->back()->with('success', 'Thank you for your order');
     }
 
     public function rating(Request $request)

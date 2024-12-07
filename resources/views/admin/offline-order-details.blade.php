@@ -56,7 +56,7 @@
                         <tr>
                             <th>Order Status</th>
                             <td colspan="5">
-                               {{ $order->status }}
+                                {{ $order->status }}
                             </td>
                         </tr>
                     </table>
@@ -79,7 +79,7 @@
                                 <th class="text-center">SKU</th>
                                 {{-- <th class="text-center">Category</th>
                                 <th class="text-center">Brand</th> --}}
-                                <th class="text-center">Options</th>
+                                {{-- <th class="text-center">Options</th> --}}
                                 <th class="text-center">Return Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -102,7 +102,7 @@
                                     <td class="text-center">{{ $item->product->SKU }}</td>
                                     {{-- <td class="text-center">Category1</td> --}}
                                     {{-- <td class="text-center">Brand1</td> --}}
-                                    <td class="text-center">{{ $item->options }}</td>
+                                    {{-- <td class="text-center">{{ $item->options }}</td> --}}
                                     <td class="text-center">{{ $item->rstatus == 0 ? 'No' : 'Yes' }}</td>
                                     <td class="text-center">
                                         <div class="list-icon-function view-icon">
@@ -131,8 +131,8 @@
                         <p>{{ $order->address }}</p>
                         <p>{{ $order->city }}, {{ $order->province }}</p>
                         {{-- <p>GHT, </p> --}}
-                        {{-- <p>AAA</p> --}}
-                        {{-- <p>{{ $order->zip_code }}</p>
+            {{-- <p>AAA</p> --}}
+            {{-- <p>{{ $order->zip_code }}</p>
                         <br>
                         <p>Phone Number : {{ $order->phone }}</p>
                     </div>
@@ -145,19 +145,26 @@
                     <tbody>
                         <tr>
                             <th>Subtotal</th>
-                            <td>{{ $order->subtotal }}</td>
+                            <td>Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
                             <th>Tax</th>
-                            <td>{{ $order->tax }}</td>
-                            {{-- <th>Discount</th>
-                            <td>{{ $order->discount }}</td> --}}
+                            <td>Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
+                            <th>Discount</th>
+                            <td>
+                                @if ($order->discount === '0.00')
+                                    -
+                                @else
+                                    Rp{{ number_format($order->discount, 3, '.', '.') }}
+                                @endif
+                            </td>
                         </tr>
+
                         <tr>
                             <th>Total</th>
-                            <td>{{ $order->total }}</td>
+                            <td>Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                             <th>Payment Mode</th>
                             <td>{{ $order->transaction }}</td>
                             <th>Status</th>
-                            <td>{{ $order->status}}
+                            <td>{{ $order->status }}
                             </td>
                         </tr>
                     </tbody>

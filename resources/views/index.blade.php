@@ -13,7 +13,7 @@
         }
     </style>
 
-    <main>
+    <main>  
         <section class="swiper-container js-swiper-slider swiper-number-pagination slideshow"
             data-settings='{
             "autoplay": {
@@ -312,7 +312,7 @@
                                                     </h6>
                                                     <div class="product-card__price d-flex">
                                                         <span class="money price text-secondary">
-                                                            Rp<s>{{ number_format($sproduct->regular_price, 3, ',', '.') }}</s>
+                                                            Rp<s>{{ number_format($sproduct->regular_price, 3, '.', '.') }}</s>
                                                             {{ number_format($sproduct->sale_price, 3, '.', '.') }}
                                                         </span>
                                                     </div>
@@ -699,8 +699,8 @@
                                         @endif
                                     </div>
                                     <div class="category-banner__item-content">
-                                        <h3 class="mb-0">{{ $fproduct->name }}</h3>
-                                        <a href="#" class="btn-link default-underline text-uppercase fw-medium">Shop
+                                        <h4 class="mb-0">{{ $fproduct->name }}</h3>
+                                        <a href="{{ route('shop.product.details', ['product_slug' => $fproduct->slug]) }}" class="btn-link default-underline text-uppercase fw-medium">Shop
                                             Now</a>
                                     </div>
                                 </div>

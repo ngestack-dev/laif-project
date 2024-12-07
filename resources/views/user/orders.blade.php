@@ -85,8 +85,8 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">{{ $order->created_at->format('d M Y H:i') }}</td>
-                                            <td class="text-center">{{ $order->delivered_date }}</td>
-                                            <td class="text-center">{{ $order->received_date }}</td>
+                                            <td class="text-center">{{ \Carbon\Carbon::parse($order->delivered_date)->format('d M Y H:i') }}</td>
+                                            <td class="text-center">{{ \Carbon\Carbon::parse($order->received_date)->format('d M Y H:i') }}</td>
                                             <td class="text-center">
                                                 <a href="{{ route('user.order.details', ['order_id' => $order->id]) }}">
                                                     <div class="list-icon-function view-icon">
@@ -99,7 +99,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="12">You don't have an order</td>
+                                            <td colspan="12" class="text-center"><br>You don't have an order<br><br><a href="{{ route('shop.index') }}" class="btn btn-primary fs-8">Shop Now</a></td>
                                         </tr>
                                     @endforelse
                                 </tbody>

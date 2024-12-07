@@ -43,7 +43,7 @@
                 </div> --}}
 
 
-                {{-- <div class="accordion" id="color-filters">
+            {{-- <div class="accordion" id="color-filters">
                     <div class="accordion-item mb-4 pb-3">
                         <h5 class="accordion-header" id="accordion-heading-1">
                             <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button"
@@ -81,7 +81,7 @@
                 </div> --}}
 
 
-                {{-- <div class="accordion" id="size-filters">
+            {{-- <div class="accordion" id="size-filters">
                     <div class="accordion-item mb-4 pb-3">
                         <h5 class="accordion-header" id="accordion-heading-size">
                             <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button"
@@ -120,7 +120,7 @@
                 </div> --}}
 
 
-                {{-- <div class="accordion" id="brand-filters">
+            {{-- <div class="accordion" id="brand-filters">
                     <div class="accordion-item mb-4 pb-3">
                         <h5 class="accordion-header" id="accordion-heading-brand">
                             <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button"
@@ -196,7 +196,7 @@
                 </div> --}}
 
 
-                {{-- <div class="accordion" id="price-filters">
+            {{-- <div class="accordion" id="price-filters">
                     <div class="accordion-item mb-4">
                         <h5 class="accordion-header mb-2" id="accordion-heading-price">
                             <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button"
@@ -426,24 +426,30 @@
                                                 data-aside="cartDrawer" title="Add To Cart">Login to add to
                                                 cart</a>
                                         @else
-                                            <form name="addtocart-form" method="post" action="{{ route('cart.add') }}">
-                                                @csrf
-                                                <div class="product-single__addtocart">
-                                                    <div class="qty-control position-relative">
-                                                        <input type="number" name="quantity" value="1" min="1"
-                                                            class="qty-control__number text-center">
-                                                        <div class="qty-control__reduce">-</div>
-                                                        <div class="qty-control__increase">+</div>
-                                                    </div><!-- .qty-control -->
-                                                    <input type="hidden" name="id" value="{{ $product->id }}">
-                                                    <input type="hidden" name="name" value="{{ $product->name }}">
-                                                    <input type="hidden" name="price"
-                                                        value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}">
-                                                    <button
-                                                        class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
-                                                        data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                                                </div>
-                                            </form>
+                                            @if ($product->stock_status == 'outofstock' || $product->quantity == 0)
+                                                <a href="javascript:void(0)"
+                                                    class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
+                                                    data-aside="cartDrawer" title="Add To Cart">Out Of Stock</a>
+                                            @else
+                                                <form name="addtocart-form" method="post" action="{{ route('cart.add') }}">
+                                                    @csrf
+                                                    <div class="product-single__addtocart">
+                                                        <div class="qty-control position-relative">
+                                                            <input type="number" name="quantity" value="1" min="1"
+                                                                class="qty-control__number text-center">
+                                                            <div class="qty-control__reduce">-</div>
+                                                            <div class="qty-control__increase">+</div>
+                                                        </div><!-- .qty-control -->
+                                                        <input type="hidden" name="id" value="{{ $product->id }}">
+                                                        <input type="hidden" name="name" value="{{ $product->name }}">
+                                                        <input type="hidden" name="price"
+                                                            value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}">
+                                                        <button
+                                                            class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
+                                                            data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
+                                                    </div>
+                                                </form>
+                                            @endif
                                         @endguest
                                     @endif
                                     {{-- <button
@@ -459,7 +465,8 @@
                                     <div class="product-card__price d-flex">
                                         <span class="money price">
                                             @if ($product->sale_price)
-                                                Rp<s>{{ number_format($product->regular_price, 3, ',', '.') }}</s> {{ number_format($product->sale_price, 3, '.', '.') }}
+                                                Rp<s>{{ number_format($product->regular_price, 3, ',', '.') }}</s>
+                                                {{ number_format($product->sale_price, 3, '.', '.') }}
                                             @else
                                                 Rp{{ number_format($product->regular_price, 3, '.', '.') }}
                                             @endif

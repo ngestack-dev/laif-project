@@ -18,13 +18,18 @@
                                     </p>
                                 </div>
                             </div>
+                            @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                             <div class="my-account__address-list row">
                                 <h5>Shipping Address</h5>
 
                                 <div class="my-account__address-item col-md-6">
                                     <div class="my-account__address-item__title">
                                         <h5>{{ Auth::user()->name }} <i class="fa fa-check-circle text-success"></i></h5>
-                                        <a href="{{ route('user.address.edit', $address->id)}}">Edit</a>
+                                        <a href="{{ route('user.address.edit', $address->id) }}">Edit</a>
                                     </div>
                                     <div class="my-account__address-item__detail">
                                         {{-- <p>Type : {{ $address->type}}</p><br> --}}

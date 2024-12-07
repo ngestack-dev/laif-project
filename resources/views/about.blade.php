@@ -10,8 +10,7 @@
 
             <div class="about-us__content pb-5 mb-5">
                 <p class="mb-5">
-                    <img loading="lazy" class="w-100 h-auto d-block" src="{{ asset('assets/images/about') }}/{{ $about->image }}" width="1410"
-                        height="550" alt="" />
+                    <img loading="lazy" class="w-60 h-auto d-block m-auto" src="{{ asset('assets/images/about') }}/{{ $about->image }}" alt="" />
                 </p>
                 <div class="mw-930">
                     <h3 class="mb-4">Address</h3>

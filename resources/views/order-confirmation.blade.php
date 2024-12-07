@@ -105,8 +105,8 @@
                 </div>
                 <div class="col-md-12">
                     <div class="text-center">
-                        <a href="{{ route('user.orders') }}">
-                            <button type="submit" class="btn btn-primary">See my orders</button>
+                        <a href="{{ route('user.order.details', ['order_id' => $order->id]) }}">
+                            <button type="submit" class="btn btn-primary">See my order</button>
                         </a>
                     </div>
                 </div>

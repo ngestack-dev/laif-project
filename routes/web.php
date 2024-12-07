@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account-address', [UserController::class, 'address'])->name('user.address');
     Route::post('/add-address', [UserController::class, 'addAddress'])->name('user.address.add');
     Route::get('/edit-address', [UserController::class, 'editAddress'])->name('user.address.edit');
+    Route::put('/update-address', [UserController::class, 'updateAddress'])->name('user.address.update');
 
     Route::get('/account-orders', [UserController::class, 'orders'])->name('user.orders');
     Route::get('/account-order/{order_id}/details', [UserController::class, 'orderDetails'])->name('user.order.details');
@@ -82,6 +83,9 @@ Route::middleware(['auth:admin', CheckRole::class . ':super-admin,admin',])->gro
     Route::get('/export-offline-orders-xlsx', [AdminController::class, 'exportOfflineOrdersXlsx'])->name('export.offline.orders.xlsx');
     Route::get('/export-offline-orders-csv', [AdminController::class, 'exportOfflineOrdersCsv'])->name('export.offline.orders.csv');
     
+    Route::get('/admin/offline-products', [AdminController::class, 'offlineProducts'])->name('admin.offline.products');
+    Route::get('/admin/add-offline-product', [AdminController::class, 'addOfflineProduct'])->name('admin.add.offline.product');
+    Route::post('/admin/store-offline-product', [AdminController::class, 'storeOfflineProduct'])->name('admin.store.offline.product');
 
 
     Route::get('/admin/about/edit', [AdminController::class, 'edit_about'])->name('about.edit');

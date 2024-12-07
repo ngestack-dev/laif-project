@@ -20,7 +20,12 @@
                         <div class="my-account__address-list row">
                             <h5>Edit Address</h5>
                         </div>
-                        <form action="{{ route('user.address.add') }}" method="POST">
+                        @if (session('success'))
+                            <div class="alert alert-success fs-3">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        <form action="{{ route('user.address.update') }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="row mt-5">

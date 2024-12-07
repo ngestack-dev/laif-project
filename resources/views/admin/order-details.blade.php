@@ -107,7 +107,7 @@
                                                 target="_blank" class="body-title-2">{{ $item->product->name }}</a>
                                         </div>
                                     </td>
-                                    <td class="text-center">Rp{{ $item->price }}0</td>
+                                    <td class="text-center">Rp{{ number_format($item->price, 3, '.', '.') }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
                                     <td class="text-center">{{ $item->product->SKU }}</td>
                                     {{-- <td class="text-center">Category1</td> --}}
@@ -155,17 +155,23 @@
                     <tbody>
                         <tr>
                             <th>Subtotal</th>
-                            <td>{{ $order->subtotal }}</td>
+                            <td>Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
                             <th>Tax</th>
-                            <td>{{ $order->tax }}</td>
+                            <td>Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
                             <th>Discount</th>
-                            <td>{{ $order->discount }}</td>
+                            <td>
+                                @if ($order->discount === '0.00')
+                                    -
+                                @else
+                                    Rp{{ number_format($order->discount, 3, '.', '.') }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Total</th>
-                            <td>{{ $order->total }}</td>
+                            <td>Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                             <th>Payment Mode</th>
-                            <td>{{ $transaction->mode }}</td>
+                            <td class="text-uppercase">{{ $transaction->mode }}</td>
                             <th>Status</th>
                             <td>
                                 @if ($transaction->status == 'success')

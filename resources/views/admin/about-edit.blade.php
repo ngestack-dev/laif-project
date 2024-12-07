@@ -29,7 +29,7 @@
                 </ul>
             </div>
             @if (session('success'))
-                <div class="alert alert-success fs-3">
+                <div class="alert alert-success fs-5">
                     {{ session('success') }}
                 </div>
             @endif
