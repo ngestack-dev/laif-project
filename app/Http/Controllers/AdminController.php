@@ -615,17 +615,16 @@ class AdminController extends Controller
         ]);
 
         foreach ($validatedData['products'] as $productData) {
-            if ($productData['quantity'] > 0) {
-                OfflineProduct::updateOrCreate(
-                    [
-                        'product_id' => $productData['id'],
-                        'admin_id' => Auth::id(),
-                    ],
-                    [
-                        'quantity' => $productData['quantity'],
-                    ]
-                );
-            }
+            // Gunakan where untuk mencari dan lakukan update manual jika quantity = 0
+            OfflineProduct::updateOrCreate(
+                [
+                    'product_id' => $productData['id'],
+                    'admin_id' => Auth::id(),
+                ],
+                [
+                    'quantity' => $productData['quantity'],
+                ]
+            );
         }
 
         return redirect()->route('admin.offline.products')->with('status', 'Offline product quantities updated successfully!');
