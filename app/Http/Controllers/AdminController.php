@@ -72,11 +72,13 @@ class AdminController extends Controller
         $ordersCount = Order::where('status', 'received')->count();
         $totalOrdersAmount = Order::where('status', 'received')->sum('total');
         $offlineOrdersCount = OfflineOrder::count();
+        $adminOfflineOrdersCount = OfflineOrder::where('admin_id', Auth::id())->count();
         $offlineOrdersAmount = OfflineOrder::sum('total');
+        $adminOfflineOrdersAmount = OfflineOrder::where('admin_id', Auth::id())->sum('total');
         $recentOrder = Order::latest()->first();
         $recentOfflineOrder = OfflineOrder::where('admin_id', Auth::id())->latest()->first();
 
-        return view('admin.index', compact('ordersCount', 'totalOrdersAmount', 'offlineOrdersCount', 'offlineOrdersAmount', 'recentOrder', 'recentOfflineOrder'));
+        return view('admin.index', compact('ordersCount', 'totalOrdersAmount', 'offlineOrdersCount', 'offlineOrdersAmount', 'recentOrder', 'recentOfflineOrder', 'adminOfflineOrdersCount', 'adminOfflineOrdersAmount' ));
     }
 
     public function products()

@@ -26,8 +26,6 @@ class OfflineOrdersExport implements FromCollection, WithHeadings
                 ->select(
                     'id',
                     'admin_id',
-                    'subtotal',
-                    'tax',
                     'total',
                     'transaction',
                     'status',
@@ -39,8 +37,6 @@ class OfflineOrdersExport implements FromCollection, WithHeadings
         return OfflineOrder::select(
             'id',
             'admin_id',
-            'subtotal',
-            'tax',
             'total',
             'transaction',
             'status',
@@ -58,8 +54,6 @@ class OfflineOrdersExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Admin ID',
-            'Subtotal',
-            'Tax',
             'Total',
             'Status',
             'Timestamp',

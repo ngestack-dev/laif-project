@@ -35,36 +35,66 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="wg-chart-default mb-20">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap14">
+                                        <div class="image ic-bg">
+                                            <i class="icon-shopping-bag"></i>
+                                        </div>
+                                        <div>
+                                            <div class="body-text mb-2">Total Offline Orders</div>
+                                            <h4>{{ $offlineOrdersCount }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="wg-chart-default mb-20">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap14">
+                                        <div class="image ic-bg">
+                                            <i class="icon-dollar-sign"></i>
+                                        </div>
+                                        <div>
+                                            <div class="body-text mb-2">Offline Orders Amount</div>
+                                            <h4>Rp{{ number_format($offlineOrdersAmount, 3, '.', '.') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endrole
-                        <div class="wg-chart-default mb-20">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap14">
-                                    <div class="image ic-bg">
-                                        <i class="icon-shopping-bag"></i>
-                                    </div>
-                                    <div>
-                                        <div class="body-text mb-2">Total Offline Orders</div>
-                                        <h4>{{ $offlineOrdersCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="wg-chart-default mb-20">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap14">
-                                    <div class="image ic-bg">
-                                        <i class="icon-dollar-sign"></i>
-                                    </div>
-                                    <div>
-                                        <div class="body-text mb-2">Offline Orders Amount</div>
-                                        <h4>Rp{{ number_format($offlineOrdersAmount, 3, '.', '.') }}</h4>
+                        @role('admin')
+                            <div class="wg-chart-default mb-20">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap14">
+                                        <div class="image ic-bg">
+                                            <i class="icon-shopping-bag"></i>
+                                        </div>
+                                        <div>
+                                            <div class="body-text mb-2">Total Offline Orders</div>
+                                            <h4>{{ $adminOfflineOrdersCount }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+
+                            <div class="wg-chart-default mb-20">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap14">
+                                        <div class="image ic-bg">
+                                            <i class="icon-dollar-sign"></i>
+                                        </div>
+                                        <div>
+                                            <div class="body-text mb-2">Offline Orders Amount</div>
+                                            <h4>Rp{{ number_format($adminOfflineOrdersAmount, 3, '.', '.') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endrole
                     </div>
 
                 </div>
@@ -178,8 +208,6 @@
                                         <tr>
                                             <th style="width:70px">OrderNo</th>
                                             <th class="text-center">Total Items</th>
-                                            <th class="text-center">Subtotal</th>
-                                            <th class="text-center">Tax</th>
                                             <th class="text-center">Total</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Timestamp</th>
@@ -190,10 +218,10 @@
                                         @if ($recentOfflineOrder)
                                             <tr>
                                                 <td class="text-center">{{ $recentOfflineOrder->id }}</td>
-                                                <td class="text-center">{{ $recentOfflineOrder->orderItems->sum('quantity') }}</td>
-                                                <td class="text-center">Rp{{ $recentOfflineOrder->subtotal }}0</td>
-                                                <td class="text-center">Rp{{ $recentOfflineOrder->tax }}0</td>
-                                                <td class="text-center">Rp{{ $recentOfflineOrder->total }}0</td>
+                                                <td class="text-center">{{ $recentOfflineOrder->orderItems->sum('quantity') }}
+                                                </td>
+
+                                                <td class="text-center">Rp{{ number_format($recentOfflineOrder->total, 3, '.', '.') }}</td>
                                                 <td class="text-center">{{ $recentOfflineOrder->status }}</td>
                                                 <td class="text-center">
                                                     {{ $recentOfflineOrder->created_at->format('d M Y H:i') }}</td>

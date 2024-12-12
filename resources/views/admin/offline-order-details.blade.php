@@ -47,7 +47,7 @@
                         </tr>
                         <tr>
                             <th>Created at</th>
-                            <td colspan="5">{{ $order->created_at }}</td>
+                            <td colspan="5">{{ $order->created_at->format('d M Y H:i') }}</td>
                             {{-- <th>Delivered Date</th>
                             <td>{{ $order->delivered_date }}</td>
                             <th>Canceled Date</th>

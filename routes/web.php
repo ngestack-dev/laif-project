@@ -17,6 +17,9 @@ Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
+Route::get('/admin/login', [AdminController::class, 'adminLoginForm'])->name('admin.login.form');
+Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
+
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
@@ -53,12 +56,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/account-rating', [UserController::class, 'rating'])->name('user.rating.product');
 });
 
-Route::get('/admin/login', [AdminController::class, 'adminLoginForm'])->name('admin.login.form');
-Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
-Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
-
-
 Route::middleware(['auth:admin', CheckRole::class . ':super-admin,admin',])->group(function () {
+    Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
+
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/admin/product/add', [AdminController::class, 'product_add'])->name('admin.product.add');
