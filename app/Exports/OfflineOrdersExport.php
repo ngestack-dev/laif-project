@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Admin;
 use App\Models\OfflineOrder;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -16,8 +17,29 @@ class OfflineOrdersExport implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        return OfflineOrder::where('admin_id', Auth::id())->select(
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Cek apakah user memiliki role 'admin'
+        if ($user && $user->hasRole('admin')) {
+            return OfflineOrder::where('admin_id', $user->id)
+                ->select(
+                    'id',
+                    'admin_id',
+                    'subtotal',
+                    'tax',
+                    'total',
+                    'transaction',
+                    'status',
+                    'created_at'
+                )->get();
+        }
+
+        // Jika bukan admin, ambil semua data OfflineOrder
+        return OfflineOrder::select(
             'id',
+            'admin_id',
+            'subtotal',
             'tax',
             'total',
             'transaction',
@@ -35,6 +57,7 @@ class OfflineOrdersExport implements FromCollection, WithHeadings
     {
         return [
             'ID',
+            'Admin ID',
             'Subtotal',
             'Tax',
             'Total',

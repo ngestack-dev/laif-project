@@ -17,7 +17,7 @@
                                 alt="" width="50" height="50">
                         </p>
                         <p class="fs-4">Here you can manage your account dashboard where you can view your <a class="unerline-link"
-                            href="account_orders.html">recent
+                            href="{{ route('user.orders') }}">recent
                             orders</a>, change your <a class="unerline-link" href="{{ route('user.address') }}">shipping
                             address</a>, and <a class="unerline-link" href="{{ route('user.details') }}">edit your
                             account

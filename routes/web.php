@@ -72,12 +72,16 @@ Route::middleware(['auth:admin', CheckRole::class . ':super-admin,admin',])->gro
     Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::get('/admin/order/{order_id}/details', [AdminController::class, 'order_details'])->name('admin.order.details');
     Route::put('/admin/order/update-status', [AdminController::class, 'update_order_status'])->name('admin.order.status.update');
+    Route::delete('/admin/order/{order_id}/delete', [AdminController::class, 'orderDelete'])->name('admin.order.delete');
     Route::get('/export-orders-xlsx', [AdminController::class, 'exportOrdersXlsx'])->name('export.orders.xlsx');
     Route::get('/export-orders-csv', [AdminController::class, 'exportOrdersCsv'])->name('export.orders.csv');
     Route::get('/admin/orders/search', [AdminController::class, 'searchOrders'])->name('admin.search.order');    
     Route::get('/admin/offline-orders', [AdminController::class, 'offlineOrders'])->name('admin.offline.orders');
     Route::get('/admin/add-offline-order', [AdminController::class, 'addOfflineOrder'])->name('admin.add.offline.order');
     Route::post('/admin/store-offline-order', [AdminController::class, 'storeOfflineOrder'])->name('admin.store.offline.order');
+
+    Route::delete('/admin/offline-order/{offline_order_id}/delete', [AdminController::class, 'offlineOrderDelete'])->name('admin.offline.order.delete');
+
     Route::get('/admin/offline-order/{order_id}/details', [AdminController::class, 'offlineOrderDetails'])->name('admin.offline.order.details');
     Route::get('/admin/offline-orders/search', [AdminController::class, 'searchOfflineOrders'])->name('admin.search.offline.order');   
     Route::get('/export-offline-orders-xlsx', [AdminController::class, 'exportOfflineOrdersXlsx'])->name('export.offline.orders.xlsx');

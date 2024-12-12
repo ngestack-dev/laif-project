@@ -69,23 +69,26 @@
                         </div>
                         <div class="center-item">
                             <ul class="menu-list">
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                <li class="menu-item">
+                                    <a href="{{ route(auth()->user()->hasRole('super-admin') ? 'admin.products' : 'admin.offline.products') }}"
+                                        class="menu-item-button">
+                                        <div class="icon"><i class="icon-layers"></i></div>
                                         <div class="text">Products</div>
                                     </a>
-                                    <ul class="sub-menu">
+                                    {{-- <ul class="sub-menu">
+                                        @role('super-admin')
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.products') }}" class="">
                                                 <div class="text">Products</div>
                                             </a>
                                         </li>
+                                        @endrole
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.offline.products') }}" class="">
                                                 <div class="text">Offline Products</div>
                                             </a>
                                         </li>
-                                    </ul>
+                                    </ul> --}}
                                 </li>
                                 {{-- <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
@@ -123,19 +126,19 @@
                                         </li>
                                     </ul>
                                 </li> --}}
-
+                                @role('super-admin')
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-file-plus"></i></div>
+                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
                                         <div class="text">Orders</div>
                                     </a>
                                     <ul class="sub-menu">
                                         @role('super-admin')
-                                        <li class="sub-menu-item">
-                                            <a href="{{ route('admin.orders') }}" class="">
-                                                <div class="text">Orders</div>
-                                            </a>
-                                        </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.orders') }}" class="">
+                                                    <div class="text">Orders</div>
+                                                </a>
+                                            </li>
                                         @endrole
                                         <li class="sub-menu-item">
                                             <a href="{{ route('admin.offline.orders') }}" class="">
@@ -144,6 +147,15 @@
                                         </li>
                                     </ul>
                                 </li>
+                                @endrole
+                                @role ('admin')
+                                <li class="menu-item">
+                                    <a href="{{ route('admin.offline.orders') }}" class="menu-item-button">
+                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                        <div class="text">Offline Orders</div>
+                                    </a>
+                                </li>
+                                @endrole
                                 {{-- <li class="menu-item">
                                     <a href="slider.html" class="">
                                         <div class="icon"><i class="icon-image"></i></div>
@@ -430,16 +442,16 @@
                                     <div class="dropdown">
                                         {{-- <button class="btn btn-secondary dropdown-toggle" type="button"    
                                             id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false"> --}}
-                                            <span class="header-user wg-user">
-                                                <span class="">
-                                                    {{-- <img src="{{ asset('images/avatar/pm.png') }}" alt=""
+                                        <span class="header-user wg-user">
+                                            <span class="">
+                                                {{-- <img src="{{ asset('images/avatar/pm.png') }}" alt=""
                                                         width="40" height="40"> --}}
-                                                </span>
-                                                <span class="flex flex-column">
-                                                    <span class="body-title mb-2">{{ Auth::user()->name }}</span>
-                                                    <span class="text-tiny">{{ Auth::user()->position }}</span>
-                                                </span>
                                             </span>
+                                            <span class="flex flex-column">
+                                                <span class="body-title mb-2">{{ Auth::user()->name }}</span>
+                                                <span class="text-tiny">{{ Auth::user()->position }}</span>
+                                            </span>
+                                        </span>
                                         {{-- </button> --}}
                                         <ul class="dropdown-menu dropdown-menu-end has-content"
                                             aria-labelledby="dropdownMenuButton3">

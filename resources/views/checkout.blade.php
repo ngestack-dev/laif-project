@@ -174,13 +174,22 @@
                                         <tr>
                                             <th>TAX</th>
                                             <td align="right">
-                                                Rp{{ number_format(Cart::instance('cart')->subtotal() * 0.1, 3, '.', '.') }}
+                                                Rp2.000
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>TOTAL</th>
                                             <td align="right">
-                                                Rp{{ number_format(Cart::instance('cart')->subtotal() * 1.1, 3, '.', '.') }}
+                                                @php
+                                                    $subtotal = (float) str_replace(
+                                                        ',',
+                                                        '',
+                                                        Cart::instance('cart')->subtotal(),
+                                                    ); // Ambil subtotal
+                                                    $tax = 2.0; // Pajak tetap Rp2.000
+                                                    $total = $subtotal + $tax; // Hitung total
+                                                @endphp
+                                                Rp{{ number_format($total, 3, '.', '.') }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -223,11 +232,9 @@
                                     </label>
                                 </div>
                                 <div class="policy-text">
-                                    Your personal data will be used to process your order, support your experience
+                                    Your personal data will be used to process your order and support your experience
                                     throughout this
-                                    website, and for other purposes described in our <a href="terms.html"
-                                        target="_blank">privacy
-                                        policy</a>.
+                                    website.
                                 </div>
                             </div>
                             @if (session('error'))

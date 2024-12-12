@@ -4,7 +4,7 @@
     <div class="main-content-inner">
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>All Offline Products</h3>
+                <h3>Offline Products</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="{{ route('admin.index') }}">
@@ -23,7 +23,7 @@
             <div class="wg-box">
                 <div class="flex items-center justify-between gap10 flex-wrap">
                     <div class="wg-filter flex-grow">
-                        <form class="form-search" action="{{ route('admin.search.product') }}" method="GET">
+                        {{-- <form class="form-search" action="{{ route('admin.search.product') }}" method="GET">
                             <fieldset class="name">
                                 <input type="text" placeholder="Search here..." class="" name="query"
                                     id="search-input" tabindex="2" value="" aria-required="true" required="">
@@ -31,7 +31,7 @@
                             <div class="button-submit">
                                 <button class="" type="submit"><i class="icon-search"></i></button>
                             </div>
-                        </form>
+                        </form> --}}
                     </div>
                     <a class="tf-button style-1 w208" href="{{ route('admin.add.offline.product') }}"><i
                             class="icon-plus"></i>Edit Stock</a>

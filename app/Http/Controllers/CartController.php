@@ -6,6 +6,7 @@ use App\Exports\OrdersExport;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -29,11 +30,30 @@ class CartController extends Controller
 
     public function increase_cart_quantity($rowId)
     {
-        $product = Cart::Instance('cart')->get($rowId);
+        // Ambil item dari keranjang
+        $product = Cart::instance('cart')->get($rowId);
+
+        // Ambil stok produk dari database
+        $productData = Product::find($product->id);
+
+        if (!$productData) {
+            return redirect()->back()->withErrors(['error' => 'Product not found.']);
+        }
+
+        // Periksa apakah kuantitas baru melebihi stok
+        if ($product->qty + 1 > $productData->quantity) {
+            return redirect()->back()->withErrors([
+                'error' => "The requested quantity for '{$productData->name}' exceeds the available stock."
+            ]);
+        }
+
+        // Perbarui kuantitas di keranjang
         $qty = $product->qty + 1;
         Cart::instance('cart')->update($rowId, $qty);
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'Product quantity increased successfully.');
     }
+
 
     public function decrease_cart_quantity($rowId)
     {
@@ -92,9 +112,9 @@ class CartController extends Controller
         $order->user_id = $user_id;
         $order->subtotal = Session::get('checkout')['subtotal'];
         // $order->discount = Session::get('checkout')['discount'];
-        $subtotal = Session::get('checkout')['subtotal'];
-        $taxAmount = $subtotal * 0.10;
-        $order->tax = $taxAmount;
+        // $subtotal = Session::get('checkout')['subtotal'];
+        // $taxAmount = Session::get('checkout')['tax'];
+        $order->tax = 2.00;
         $order->total = $order->subtotal + $order->tax;
         $order->name = $address->name;
         $order->phone = $address->mobile;

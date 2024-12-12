@@ -14,7 +14,7 @@
                                             <i class="icon-shopping-bag"></i>
                                         </div>
                                         <div>
-                                            <div class="body-text mb-2">Total Complete Orders</div>
+                                            <div class="body-text mb-2">Total Complete Online Orders</div>
                                             <h4>{{ $ordersCount }}</h4>
                                         </div>
                                     </div>
@@ -69,45 +69,49 @@
 
                 </div>
 
-                <div class="wg-box">
-                    <div class="flex items-center justify-between">
-                        <h5>Earnings revenue</h5>
-                    </div>
-                    <div class="flex flex-wrap gap40">
-                        <div>
-                            <div class="mb-2">
-                                <div class="block-legend">
-                                    <div class="dot t1"></div>
-                                    <div class="text-tiny">Online Orders</div>
+                @role('super-admin')
+                    <div class="wg-box">
+                        <div class="flex items-center justify-between">
+                            <h5>Earnings revenue</h5>
+                        </div>
+                        <div class="flex flex-wrap gap40">
+                            <div>
+                                <div class="mb-2">
+                                    <div class="block-legend">
+                                        <div class="dot t1"></div>
+                                        <div class="text-tiny">Online Orders</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex items-center gap10">
-                                <h4>Rp{{ number_format($totalOrdersAmount, 3, '.', '.') }}</h4>
-                                {{-- <div class="box-icon-trending up">
+                                <div class="flex items-center gap10">
+                                    <h4>Rp{{ number_format($totalOrdersAmount, 3, '.', '.') }}</h4>
+                                    {{-- <div class="box-icon-trending up">
                                     <i class="icon-trending-up"></i>
                                     <div class="body-title number">0.56%</div>
                                 </div> --}}
-                            </div>
-                        </div>
-                        <div>
-                            <div class="mb-2">
-                                <div class="block-legend">
-                                    <div class="dot t3  "></div>
-                                    <div class="text-tiny">Offline Order</div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap10">
-                                <h4>Rp{{ number_format($offlineOrdersAmount, 3, '.', '.') }}</h4>
-                                {{-- <div class="box-icon-trending up">
+                            <div>
+                                <div class="mb-2">
+                                    <div class="block-legend">
+                                        <div class="dot t3  "></div>
+                                        <div class="text-tiny">Offline Order</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap10">
+                                    <h4>Rp{{ number_format($offlineOrdersAmount, 3, '.', '.') }}</h4>
+                                    {{-- <div class="box-icon-trending up">
                                     <i class="icon-trending-up"></i>
                                     <div class="body-title number"></div>
                                 </div> --}}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="line-chart-8" style="height: 400px; width: 100%;"></div>
-                </div>
 
+                        <div id="chart-container">
+                            <canvas id="earningsChart"></canvas>
+                        </div>
+                    </div>
+                @endrole
             </div>
             <div class="tf-section mb-30">
                 <div class="wg-box">
@@ -126,7 +130,7 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 80px">OrderNo</th>
-                                            <th>Name</th>
+                                            <th class="text-center">Name</th>
                                             <th class="text-center" style="width: 150px">Phone</th>
                                             <th class="text-center">Total Items</th>
                                             <th class="text-center">Subtotal</th>
@@ -144,7 +148,7 @@
                                             <td class="text-center">{{ $recentOrder->id }}</td>
                                             <td class="text-center">{{ $recentOrder->name }}</td>
                                             <td class="text-center">{{ $recentOrder->phone }}</td>
-                                            <td class="text-center">{{ $recentOrder->orderItems->count() }}</td>
+                                            <td class="text-center">{{ $recentOrder->orderItems->sum('quantity') }}</td>
                                             <td class="text-center">Rp{{ $recentOrder->subtotal }}0</td>
                                             <td class="text-center">Rp{{ $recentOrder->tax }}0</td>
                                             <td class="text-center">Rp{{ $recentOrder->total }}0</td>
@@ -186,7 +190,7 @@
                                         @if ($recentOfflineOrder)
                                             <tr>
                                                 <td class="text-center">{{ $recentOfflineOrder->id }}</td>
-                                                <td class="text-center">{{ $recentOfflineOrder->orderItems->count() }}</td>
+                                                <td class="text-center">{{ $recentOfflineOrder->orderItems->sum('quantity') }}</td>
                                                 <td class="text-center">Rp{{ $recentOfflineOrder->subtotal }}0</td>
                                                 <td class="text-center">Rp{{ $recentOfflineOrder->tax }}0</td>
                                                 <td class="text-center">Rp{{ $recentOfflineOrder->total }}0</td>
@@ -219,3 +223,64 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('earningsChart').getContext('2d');
+
+        // Fungsi untuk memformat angka
+        function formatNumber(number) {
+            return number.toLocaleString('id-ID', {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3
+            });
+        }
+
+        const earningsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Online Orders', 'Offline Orders'], // Menampilkan label untuk masing-masing kategori
+                datasets: [{
+                    data: [{{ $totalOrdersAmount }}, {{ $offlineOrdersAmount }}],
+                    backgroundColor: [
+                        'rgba(34,119,253,255)', // Warna untuk Online Orders
+                        'rgba(254,82,1,255)' // Warna untuk Offline Orders
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1,
+                    label: '' // Menghilangkan label default pada dataset
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatNumber(value); // Format angka pada sumbu Y
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                return `Rp ${formatNumber(value)}`; // Format angka pada tooltip
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false // Menyembunyikan legend
+                    }
+                }
+            }
+        });
+    </script>
+@endpush

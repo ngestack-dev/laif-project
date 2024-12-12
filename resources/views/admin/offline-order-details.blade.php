@@ -81,7 +81,7 @@
                                 <th class="text-center">Brand</th> --}}
                                 {{-- <th class="text-center">Options</th> --}}
                                 <th class="text-center">Return Status</th>
-                                <th class="text-center">Action</th>
+                                {{-- <th class="text-center">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -104,13 +104,13 @@
                                     {{-- <td class="text-center">Brand1</td> --}}
                                     {{-- <td class="text-center">{{ $item->options }}</td> --}}
                                     <td class="text-center">{{ $item->rstatus == 0 ? 'No' : 'Yes' }}</td>
-                                    <td class="text-center">
+                                    {{-- <td class="text-center">
                                         <div class="list-icon-function view-icon">
                                             <div class="item eye">
                                                 <i class="icon-eye"></i>
                                             </div>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -144,31 +144,26 @@
                 <table class="table table-striped table-bordered table-transaction">
                     <tbody>
                         <tr>
-                            <th>Subtotal</th>
-                            <td>Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
-                            <th>Tax</th>
-                            <td>Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
-                            <th>Discount</th>
-                            <td>
-                                @if ($order->discount === '0.00')
-                                    -
-                                @else
-                                    Rp{{ number_format($order->discount, 3, '.', '.') }}
-                                @endif
-                            </td>
-                        </tr>
-
-                        <tr>
                             <th>Total</th>
                             <td>Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                             <th>Payment Mode</th>
-                            <td>{{ $order->transaction }}</td>
+                            <td>{{ $order->transaction }}</td>                    
+                        </tr>
+                        
+                        <tr>
                             <th>Status</th>
                             <td>{{ $order->status }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <form action="{{ route('admin.offline.order.delete', ['offline_order_id' => $order->id]) }}" method="POST" class="text-end">
+                    @csrf
+                    @method('DELETE')
+                    <div class="delete item text-danger">
+                        <i class="icon-trash-2" style="font-size: 30px"></i>
+                    </div>
+                </form>
             </div>
 
             {{-- <div class="wg-box mt-5">
@@ -199,3 +194,25 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('.delete').on('click', function(e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                swal({
+                    title: "Are you sure?",
+                    text: "You want to delete this product?",
+                    type: "warning",
+                    buttons: ["Cancel", "Yes!"],
+                    confirmButtonColor: "#dc3545",
+                }).then(function(result) {
+                    if (result) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

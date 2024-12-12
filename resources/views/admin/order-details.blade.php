@@ -47,9 +47,9 @@
                         </tr>
                         <tr>
                             <th>Order Date</th>
-                            <td>{{ $order->created_at }}</td>
+                            <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                             <th>Delivered Date</th>
-                            <td>{{ $order->delivered_date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->delivered_date)->format('d M Y H:i') }}</td>
                             <th>Canceled Date</th>
                             <td>{{ $order->canceled_date }}</td>
                         </tr>
@@ -67,7 +67,7 @@
                                 @endif
                             </td>
                             <th>Received Date</th>
-                            <td>{{ $order->received_date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->received_date)->format('d M Y H:i') }}</td>
                         </tr>
                     </table>
                 </div>
@@ -187,6 +187,16 @@
                         </tr>
                     </tbody>
                 </table>
+                @if ($order->status == 'received' || $order->status == 'canceled')
+                    <form action="{{ route('admin.offline.order.delete', ['offline_order_id' => $order->id]) }}"
+                        method="POST" class="text-end">
+                        @csrf
+                        @method('DELETE')
+                        <div class="delete item text-danger">
+                            <i class="icon-trash-2" style="font-size: 30px"></i>
+                        </div>
+                    </form>
+                @endif
             </div>
 
             @if ($order->status != 'received')

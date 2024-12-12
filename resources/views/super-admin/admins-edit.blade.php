@@ -72,11 +72,11 @@
                     @enderror
 
                     <fieldset class="position">
-                        <div class="body-title mb-10">New Password <span class="tf-color-1">*</span>
+                        <div class="body-title mb-10">Password <span class="tf-color-1">*</span>
                         </div>
                         <input class="mb-10" type="password" placeholder="Enter password" name="password" tabindex="0"
-                            value="" aria-required="true" required="">
-                        <div class="text-tiny">New Password require min 8 characters.</div>
+                            value="" aria-required="true" >
+                        <div class="text-tiny">Password require min 8 characters.</div>
                     </fieldset>
                     @error('password')
                         <span class="alert alert-danger text-center">{{ $message }}</span>
@@ -86,7 +86,7 @@
                         <div class="body-title mb-10">Confirm New Password <span class="tf-color-1">*</span>
                         </div>
                         <input class="mb-10" type="password" placeholder="Enter password" name="password_confirmation"
-                            tabindex="0" value="" aria-required="true" required="">
+                            tabindex="0" value="" aria-required="true">
                     </fieldset>
                     @error('password')
                         <span class="alert alert-danger text-center">{{ $message }}</span>

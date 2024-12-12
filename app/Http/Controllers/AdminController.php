@@ -74,7 +74,7 @@ class AdminController extends Controller
         $offlineOrdersCount = OfflineOrder::count();
         $offlineOrdersAmount = OfflineOrder::sum('total');
         $recentOrder = Order::latest()->first();
-        $recentOfflineOrder = OfflineOrder::latest()->first();
+        $recentOfflineOrder = OfflineOrder::where('admin_id', Auth::id())->latest()->first();
 
         return view('admin.index', compact('ordersCount', 'totalOrdersAmount', 'offlineOrdersCount', 'offlineOrdersAmount', 'recentOrder', 'recentOfflineOrder'));
     }
@@ -107,12 +107,12 @@ class AdminController extends Controller
             'sale_price' => 'nullable',
             'SKU' => 'required',
             'quantity' => 'required',
-            'image' => 'required | mimes:png,jpg,jpeg | max: 15680',
+            'image' => 'required | mimes:png,jpg,jpeg | max: 2048',
             'featured' => 'required',
             'stock_status' => 'required',
         ], [
             'image.mimes' => 'Hanya file dengan ekstensi jpeg, png, jpg, atau gif yang diizinkan.',
-            'image.max' => 'Ukuran file tidak boleh lebih dari 15MB.',
+            'image.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         $product = new Product();
@@ -350,6 +350,13 @@ class AdminController extends Controller
         return back()->with('status', 'Order status has been updated successfully');
     }
 
+    public function orderDelete($order_id)
+    {
+        $order = Order::find($order_id);
+        $order->delete();
+        return redirect()->route('admin.orders')->with('status', 'Order deleted successfully.');
+    }
+
     public function exportOrdersXlsx()
     {
         return Excel::download(new OrdersExport, 'orders.xlsx');
@@ -456,12 +463,30 @@ class AdminController extends Controller
             return redirect()->back()->withErrors(['products' => 'Please add at least one product with a quantity greater than 0.']);
         }
 
+        foreach ($filteredProducts as $product) {
+            if (auth()->user()->hasRole('super-admin')) {
+                $productData = Product::find($product['id']);
+                $availableQuantity = $productData->quantity;
+            } else {
+                $productData = OfflineProduct::where('product_id', $product['id'])
+                    ->where('admin_id', Auth::id())
+                    ->first();
+                $availableQuantity = $productData->quantity ?? 0;
+            }
+
+            if ($product['quantity'] > $availableQuantity) {
+                return redirect()->back()->withErrors([
+                    'products' => "The requested quantity for product '{$productData->product->name}' exceeds the available stock.",
+                ]);
+            }
+        }
+
         // Simpan order ke dalam database
         $order = new OfflineOrder();
         $order->admin_id = Auth::id();
-        $order->subtotal = $this->calculateSubtotal($filteredProducts);
-        $order->tax = $this->calculateTax($order->subtotal);
-        $order->total = $order->subtotal + $order->tax;
+        $order->total = $this->calculateSubtotal($filteredProducts);
+        // $order->tax = $this->calculateTax($order->subtotal);
+        // $order->total = $order->subtotal + $order->tax;
         $order->save();
 
         // Simpan order items ke dalam database
@@ -473,9 +498,13 @@ class AdminController extends Controller
             $orderItem->quantity = $product['quantity'];
             $orderItem->price = $product['price'];
 
-            // Kurangi quantity produk di OfflineProduct
-            OfflineProduct::where('product_id', $product['id'])
+            if (auth()->user()->hasRole('super-admin')) {
+                Product::where('id', $product['id'])
                 ->decrement('quantity', $product['quantity']);
+            } else {
+                OfflineProduct::where('product_id', $product['id'])
+                ->decrement('quantity', $product['quantity']);
+            }
 
             // Simpan OrderItem setelah melakukan decrement
             $orderItem->save();
@@ -488,6 +517,22 @@ class AdminController extends Controller
 
         // Redirect atau memberi response setelah berhasil
         return redirect()->route('admin.offline.orders')->with('success', 'Offline order created successfully.');
+    }
+
+    public function offlineOrderDelete($offline_order_id)
+    {
+        $order = OfflineOrder::find($offline_order_id);
+        $order->delete();
+        return redirect()->route('admin.offline.orders')->with('success', 'Offline order deleted successfully.');
+    }
+
+    public function offlineOrderDeleteAll()
+    {
+        $orders = OfflineOrder::all();
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        return redirect()->route('admin.offline.orders')->with('success', 'All offline orders deleted successfully.');
     }
 
 
@@ -626,6 +671,11 @@ class AdminController extends Controller
                 ]
             );
         }
+
+        ActivityLog::create([
+            'admin_id' => auth()->id(),
+            'activity' => 'Updated Offline Product quantities ',
+        ]);
 
         return redirect()->route('admin.offline.products')->with('status', 'Offline product quantities updated successfully!');
     }

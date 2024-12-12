@@ -37,15 +37,19 @@
                             class="icon-plus"></i>Add
                         Order</a>
                 </div>
+                @if (session('success'))
+                    <div class="alert alert-success fs-3">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th style="width:70px">OrderNo</th>
+                                    <th class="text-center">Admin/Super-Admin</th>
                                     <th class="text-center">Total Items</th>
-                                    <th class="text-center">Subtotal</th>
-                                    <th class="text-center">Tax</th>
                                     <th class="text-center">Total</th>
 
                                     <th class="text-center">Status</th>
@@ -56,10 +60,15 @@
                             <tbody>
                                 @forelse ($orders as $order)
                                     <tr>
-                                        <td class="text-center">{{ $order->id }}</td>
+                                        <td class="text-center">
+                                            @if (auth()->user()->hasRole('super-admin'))
+                                                {{ $order->id }}
+                                            @else
+                                                {{ $order->id }}
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $order->admin->position }}/{{ $order->admin->name }}</td>
                                         <td class="text-center">{{ $order->orderItems->sum('quantity') }}</td>
-                                        <td class="text-center">Rp{{ number_format($order->subtotal, 3, '.', '.') }}</td>
-                                        <td class="text-center">Rp{{ number_format($order->tax, 3, '.', '.') }}</td>
                                         <td class="text-center">Rp{{ number_format($order->total, 3, '.', '.') }}</td>
                                         <td class="text-center">{{ $order->status }}</td>
                                         <td class="text-center">{{ $order->created_at->format('d M Y H:i') }}</td>

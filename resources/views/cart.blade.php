@@ -28,6 +28,13 @@
                     </span>
                 </a>
             </div>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <span>{{ $error }}</span>
+                    @endforeach
+                </div>
+            @endif
             <div class="shopping-cart">
                 @if ($items->count() > 0)
                     <div class="cart-table__wrapper">
@@ -68,7 +75,7 @@
                                         <td>
                                             <div class="qty-control position-relative">
                                                 <input type="number" name="quantity" value="{{ $item->qty }}"
-                                                    min="1" class="qty-control__number text-center">
+                                                    min="1" class="qty-control__number text-center" readonly>
                                                 <form method="POST"
                                                     action="{{ route('cart.qty.decrease', ['rowId' => $item->rowId]) }}">
                                                     @csrf
@@ -85,7 +92,8 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="shopping-cart__subtotal">Rp {{ $item->subTotal() }}0</span>
+                                            <span class="shopping-cart__subtotal">Rp
+                                                {{ number_format((float) str_replace(',', '', $item->subTotal()) * 1000, 0, ',', '.') }}</span>
                                         </td>
                                         <td>
                                             <form action="{{ route('cart.item.remove', ['rowId' => $item->rowId]) }}"
@@ -124,27 +132,42 @@
                                     <tbody>
                                         <tr>
                                             <th>Subtotal</th>
-                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal(), 3, '.', '.') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td>Free
+                                            <td>
+                                                Rp{{ number_format((float) Cart::instance('cart')->subtotal(), 3, '.', '.') }}
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th>Shipping</th>
+                                            <td>Free</td>
+                                        </tr>
+                                        <tr>
                                             <th>TAX</th>
-                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal() * 0.10, 3, '.', '.') }}</td>
+                                            <td>
+                                                Rp2.000
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Total</th>
-                                            <td>Rp{{ number_format(Cart::instance('cart')->subtotal() * 1.10, 3, '.', '.') }}</td>
+                                            <td>
+                                                @php
+                                                    $subtotal = (float) str_replace(
+                                                        ',',
+                                                        '',
+                                                        Cart::instance('cart')->subtotal(),
+                                                    ); // Ambil subtotal
+                                                    $tax = 2.00; // Pajak tetap Rp2.000
+                                                    $total = $subtotal + $tax; // Hitung total
+                                                @endphp
+                                                Rp{{ number_format($total, 3, '.', '.') }}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="mobile_fixed-btn_wrapper">
                                 <div class="button-wrapper container">
-                                    <a href="{{ route('cart.checkout') }}" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
+                                    <a href="{{ route('cart.checkout') }}" class="btn btn-primary btn-checkout">PROCEED TO
+                                        CHECKOUT</a>
                                 </div>
                             </div>
                         </div>

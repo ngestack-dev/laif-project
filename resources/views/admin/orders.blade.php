@@ -50,7 +50,7 @@
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Order Date</th>
                                     {{-- <th class="text-center">Delivered On</th> --}}
-                                    <th class="text-center">Details</th>
+                                    <th class="text-center">Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
